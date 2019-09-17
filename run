@@ -95,6 +95,8 @@ install() {
       color_msg $green "$d already unzipped"
     fi
   done
+  color_msg $blue "installing needed python modules"
+  sudo -H pip install -r requirements.txt
 }
 
 # commandline option
@@ -117,7 +119,7 @@ do
       ;;
     -p|--python)
       color_msg $blue "starting python test code"
-      python gt2.py
+      python gt1.py
       ;;
     -h|--help)
       usage;;
