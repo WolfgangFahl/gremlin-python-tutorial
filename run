@@ -115,9 +115,9 @@ checkinstalled() {
 install() {
   color_msg $blue "checking prerequisites ..."
   checkinstalled java "-version" "openjdk-8-jre" "openjdk8"
-  checkinstalled python "--version" "python2.7" "python27"
-  checkinstalled pip "--version" "python-pip" "py27-pip"
-  checkinstalled pytest "--version" "python-pytest" "py27-pytest"
+  checkinstalled python3 "--version" "python3.7" "python37"
+  checkinstalled pip "--version" "python-pip" "py37-pip"
+  checkinstalled pytest "--version" "python-pytest" "py37-pytest"
 
   for d in $gsd $gcd
   do
@@ -161,7 +161,7 @@ do
       ;;
     -p|--python)
       color_msg $blue "starting python test code"
-      python2 gt1.py
+      python3 gt1.py
       ;;
     -v|--version)
       color_msg $blue "apache-tinkerpop-gremlin version $version"
