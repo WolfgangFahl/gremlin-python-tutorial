@@ -49,6 +49,7 @@ usage() {
   echo "  -s|--server: start server"
   echo "  -c|--console: start console"
   echo "  -p|--python: start python trial code"
+  echo "  -v|-version: show version"
   exit 1
 }
 
@@ -120,6 +121,9 @@ do
     -p|--python)
       color_msg $blue "starting python test code"
       python gt1.py
+      ;;
+    -v|--version)
+      color_msg $blue "apache-tinkerpop-gremlin version $version"
       ;;
     -h|--help)
       usage;;
