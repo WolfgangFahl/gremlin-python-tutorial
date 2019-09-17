@@ -116,7 +116,7 @@ install() {
   color_msg $blue "checking prerequisites ..."
   checkinstalled java "-version" "openjdk-8-jre" "openjdk8"
   checkinstalled python3 "--version" "python3.7" "python37"
-  checkinstalled pip "--version" "python-pip" "py37-pip"
+  checkinstalled pip3 "--version" "python3.7-pip" "py37-pip"
   checkinstalled pytest "--version" "python-pytest" "py37-pytest"
 
   for d in $gsd $gcd
@@ -138,7 +138,7 @@ install() {
     fi
   done
   color_msg $blue "installing needed python modules"
-  sudo -H pip install -r requirements.txt
+  sudo -H pip3 install -r requirements.txt
 }
 
 # commandline option
