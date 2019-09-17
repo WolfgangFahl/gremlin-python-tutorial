@@ -43,13 +43,13 @@ error() {
 # show the usage
 #
 usage() {
-  echo "usage: $0  [-h|-i|-s|-c]"
+  echo "usage: $0  [-c|-h|-i|-p|-s|-v]"
+  echo "  -c|--console: start console"
   echo "  -h|--help: show this usage"
   echo "  -i|--install: install prerequisites"
-  echo "  -s|--server: start server"
-  echo "  -c|--console: start console"
   echo "  -p|--python: start python trial code"
-  echo "  -v|-version: show version"
+  echo "  -s|--server: start server"
+  echo "  -v|--version: show version"
   exit 1
 }
 
