@@ -1,0 +1,128 @@
+#!/bin/bash
+# WF 2019-09-17
+# test gremlin-python
+
+# see https://stackoverflow.com/questions/57936915/how-do-i-get-gremlin-python-with-gremlin-server-3-4-3-to-work
+version=3.4.3
+mirror=http://mirror.dkd.de/apache/tinkerpop/$version
+gsd=apache-tinkerpop-gremlin-server-${version}
+gcd=apache-tinkerpop-gremlin-console-${version}
+
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+}
+
+#
+# show the usage
+#
+usage() {
+  echo "usage: $0  [-h|-i|-s|-c]"
+  echo "  -h|--help: show this usage"
+  echo "  -i|--install: install prerequisites"
+  echo "  -s|--server: start server"
+  echo "  -c|--console: start console"
+  echo "  -p|--python: start python trial code"
+  exit 1
+}
+
+# check that the given program is installed
+checkinstalled() {
+  local l_prg="$1"
+  local l_version="$2"
+  local l_package="$3"
+  which $l_prg
+  if [ $? -ne 0 ]
+  then
+    color_msg $blue "$l_prg is not available - shall i install it from $l_package y/n?"
+    read x
+    case $x in
+      y) sudo apt-get install $l_package;;
+      *) color_msg $red "aborting ..."
+         exit 1;;
+    esac
+  fi
+  $l_prg $l_version
+}
+
+install() {
+  color_msg $blue "checking prerequisites ..."
+  checkinstalled java "-version" "openjdk-8-jre"
+  checkinstalled python "--version" "python2.7"
+  checkinstalled pip "--version" "python-pip"
+
+  for d in $gsd $gcd
+  do
+    if [ ! -d $d ]
+    then
+      zip=$d-bin.zip
+      if [ ! -f $zip ]
+      then
+        color_msg $blue "downloading $zip"
+        curl -s $mirror/$zip -o $zip
+      else
+        color_msg $green "$zip already downloaded"
+      fi
+      color_msg $blue "unzipping $zip"
+      unzip -q $zip
+    else
+      color_msg $green "$d already unzipped"
+    fi
+  done
+}
+
+# commandline option
+while [  "$1" != ""  ]
+do
+  option=$1
+  shift
+  case $option in
+    -i|--install)
+      install;;
+    -s|--server)
+      color_msg $blue "starting gremlin-server ..."
+      #conf=$(realpath $gsd/conf/gremlin-server-modern-py.yaml)
+      conf=$(realpath $gsd/conf/gremlin-server-modern.yaml)
+      $gsd/bin/gremlin-server.sh $conf
+      ;;
+    -c|--console)
+      color_msg $blue "starting gremlin-console ..."
+      $gcd/bin/gremlin.sh
+      ;;
+    -p|--python)
+      color_msg $blue "starting python test code"
+      python gt2.py
+      ;;
+    -h|--help)
+      usage;;
+    *)
+      error "invalid option $option"
+      usage
+  esac
+done
