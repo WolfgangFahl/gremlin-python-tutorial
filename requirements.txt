@@ -2,3 +2,5 @@
 futures
 # https://pypi.org/project/gremlinpython/
 gremlinpython
+# python tests
+pytest
