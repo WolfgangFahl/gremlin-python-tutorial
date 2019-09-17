@@ -72,11 +72,14 @@ checkinstalled() {
   $l_prg $l_version
 }
 
+
+# install prerequisites
 install() {
   color_msg $blue "checking prerequisites ..."
   checkinstalled java "-version" "openjdk-8-jre"
   checkinstalled python "--version" "python2.7"
   checkinstalled pip "--version" "python-pip"
+  checkinstalled pytest "--version" "python-pytest"
 
   for d in $gsd $gcd
   do
