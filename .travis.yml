@@ -1,9 +1,11 @@
 # see https://docs.travis-ci.com/user/languages/python/
 language: python
-# make sure gremlin server is installed and started
+python:
+  - "2.7"
+  - "3.7"
 before_script:
-  - ./run -i
-  - ./run -s&
+  ./run -i
+  ./run -s&
 # command to install dependencies
 install:
   - pip install -r requirements.txt

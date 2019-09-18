@@ -50,7 +50,7 @@ error() {
 # show the usage
 #
 usage() {
-  echo "usage: $0  [-c|-h|-i|-p|-s|-v]"
+  echo "usage: $0  [-c|-h|-i|-p|-s|-t|-v]"
   echo "  -c|--console: start console"
   echo "  -h|--help: show this usage"
   echo "  -i|--install: install prerequisites"
@@ -177,7 +177,7 @@ do
       ;;
     -t|--test)
       $python -m pytest
-      ;;  
+      ;;
     -h|--help)
       usage;;
     *)
