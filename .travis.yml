@@ -1,11 +1,13 @@
 # see https://docs.travis-ci.com/user/languages/python/
 language: python
+# python versions to be tested
 python:
   - "2.7"
   - "3.7"
-before_install:
-  ./run -i
-  ./run -s&
+# make sure the installation and server is run before starting the tests
+before_script:
+  -  ./run -i
+  -  ./run -s&
 # command to install dependencies
 install:
   - pip install -r requirements.txt
