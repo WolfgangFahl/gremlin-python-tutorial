@@ -6,8 +6,11 @@ python:
   - "3.7"
 # make sure the installation and server is run before starting the tests
 before_script:
+  # install gremlin-server and python-gremlin
   -  ./run -i
+  # start server
   -  ./run -s&
+  - - sleep 10 # give server some time to start
 # command to install dependencies
 install:
   - pip install -r requirements.txt
