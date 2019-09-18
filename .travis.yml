@@ -3,7 +3,7 @@ language: python
 python:
   - "2.7"
   - "3.7"
-before_script:
+before_install:
   ./run -i
   ./run -s&
 # command to install dependencies

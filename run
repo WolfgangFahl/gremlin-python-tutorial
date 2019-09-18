@@ -176,7 +176,7 @@ do
       color_msg $blue "apache-tinkerpop-gremlin version $version"
       ;;
     -t|--test)
-      $python -m pytest
+      $python -m pytest -p no:warnings
       ;;
     -h|--help)
       usage;;
