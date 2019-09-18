@@ -10,7 +10,8 @@ before_script:
   -  ./run -i
   # start server
   -  ./run -s&
-  - - sleep 10 # give server some time to start
+  # give server some time to start
+  - "sleep 10"
 # command to install dependencies
 install:
   - pip install -r requirements.txt
