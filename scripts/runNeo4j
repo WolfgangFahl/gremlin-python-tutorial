@@ -72,7 +72,7 @@ do
 done
 
 # prepare data directory (if not there yet)
-data=$HOME/neo4j/data
+data=/tmp/neo4j
 if [ ! -d $data ]
 then
   mkdir -p $data
