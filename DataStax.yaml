@@ -1,0 +1,8 @@
+!!python/object:tutorial.remote.Server
+alias: g
+helpUrl: http://wiki.bitplan.com/index.php/Gremlin_python#Connecting_to_Gremlin_enabled_graph_databases
+host: localhost
+name: DataStax 
+username: null 
+password: null 
+port: 8182

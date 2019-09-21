@@ -1,0 +1,4 @@
+# https://hub.docker.com/_/datastax
+image=datastax/dse-server:6.7.2
+docker pull $image
+docker run --name datastax  -e DS_LICENSE=accept -p 8182:8182 $image
