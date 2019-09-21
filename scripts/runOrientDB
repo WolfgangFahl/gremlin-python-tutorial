@@ -1,0 +1,4 @@
+# https://hub.docker.com/_/orientdb
+docker pull orientdb:3.0.23-tp3
+docker run -d --name odbtp3 -p 2424:2424 -p 2480:2480 -p 8182:8182 -e ORIENTDB_ROOT_PASSWORD=rootpwd orientdb:3.0.23-tp3
+

@@ -4,3 +4,5 @@ futures
 gremlinpython
 # python tests
 pytest
+# yaml parsing
+pyyaml
