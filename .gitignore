@@ -109,3 +109,6 @@ venv.bak/
 
 # apache tinkerpop binary directories
 apache-tinkerpop-gremlin-*
+
+# nohup.out files
+nohup.out

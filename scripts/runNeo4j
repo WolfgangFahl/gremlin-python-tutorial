@@ -1,0 +1,119 @@
+#!/bin/bash
+# https://hub.docker.com/_/neo4j
+# WF 2017-07-05
+# added to gremlin-python tutorial 2019-09-21
+image=neo4j:3.5.9
+containername=neo4j
+
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+	local l_msg="$2"
+	echo -e "${l_color}$l_msg${endColor}"
+}
+
+#
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+	# use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+  exit 1
+}
+
+#
+# show usage
+#
+usage() {
+  local p_name=`basename $0`
+  echo "$p_name"
+  echo "       -h |--help        : show this usage"
+  echo "       -rc|--recreate    : recreate the container"
+  echo "       -it               : run shell in container"
+  exit 1
+}
+
+# remember the time we started this
+start_date=$(date -u +"%s")
+
+while test $# -gt 0
+do
+  case $1 in
+    # help
+    -h|--help)
+      usage;;
+
+    -rc|--recreate)
+      recreate="true"
+      ;;
+
+    -it)
+      it=true
+      ;;
+  esac
+  shift
+done
+
+# prepare data directory (if not there yet)
+data=$HOME/neo4j/data
+if [ ! -d $data ]
+then
+  mkdir -p $data
+fi
+
+#
+# prepare optional recreate
+#
+if [ "$recreate" = "true" ]
+then
+  color_msg $blue "preparing recreate of $containername"
+  color_msg $blue "stopping $containername"
+  docker stop $containername
+  color_msg $blue "remove $containername"
+  docker rm $containername
+fi
+
+docker images $image | grep neo4j
+if [ $? -ne 0 ]
+then
+  docker pull $image
+fi
+
+docker ps | grep $containername
+if [ $? -ne 0 ]
+then
+  nohup docker run \
+     --publish=7474:7474 --publish=7687:7687 \
+     --volume=$data:/data \
+     --name $containername \
+     $image&
+  sleep 2
+fi
+#find out hostname
+hostname=$(hostname)
+
+# open neo4j in browser
+open http://$hostname:7474/
+
+# open shell
+if [ "$it" == "true" ]
+then
+  docker exec -it $containername /bin/bash
+fi

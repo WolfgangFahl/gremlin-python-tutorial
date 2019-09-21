@@ -56,6 +56,7 @@ usage() {
   echo "  -i|--install: install prerequisites"
   echo "  -p|--python: start python trial code"
   echo "  -s|--server: start server"
+  echo "  -n|--neo4j: start neo4j server"
   echo "  -t|--test: start pytest"
   echo "  -v|--version: show version"
   exit 1
@@ -162,6 +163,19 @@ do
       color_msg $blue "starting gremlin-server ..."
       #conf=$(realpath $gsd/conf/gremlin-server-modern-py.yaml)
       conf=$(realpath $gsd/conf/gremlin-server-modern.yaml)
+      $gsd/bin/gremlin-server.sh $conf
+      ;;
+    -n|--neo4j)
+      plugin=neo4j-gremlin
+      if [ ! -d $gsd/ext/$plugin ]
+      then
+        color_msg $blue "installing plugin $plugin"
+        $gsd/bin/gremlin-server.sh install org.apache.tinkerpop $plugin $version
+      else
+        color_msg $green "$plugin plugin already installed"
+      fi
+      color_msg $blue "starting neo4j gremlin-server ..."
+      conf=$(realpath $gsd/conf/gremlin-server-neo4j.yaml)
       $gsd/bin/gremlin-server.sh $conf
       ;;
     -c|--console)
