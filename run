@@ -54,13 +54,13 @@ error() {
 # show the usage
 #
 usage() {
-  echo "usage: $0  [-c|-h|-i|-p|-s|-t|-v]"
+  echo "usage: $0  [-c|-h|-i|-n|-p|-s|-t|-v]"
   echo "  -c|--console: start console"
   echo "  -h|--help: show this usage"
   echo "  -i|--install: install prerequisites"
+  echo "  -n|--neo4j: start neo4j server"
   echo "  -p|--python: start python trial code"
   echo "  -s|--server: start server"
-  echo "  -n|--neo4j: start neo4j server"
   echo "  -t|--test: start pytest"
   echo "  -v|--version: show version"
   exit 1
