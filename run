@@ -7,8 +7,12 @@ version=3.4.3
 mirror=http://mirror.dkd.de/apache/tinkerpop/$version
 gsd=apache-tinkerpop-gremlin-server-${version}
 gcd=apache-tinkerpop-gremlin-console-${version}
+# python and pip commands to be used
+# on macports see e.g. http://johnlaudun.org/20150512-installing-and-setting-pip-with-macports/ for how to modify these
+# e.g. with sudo port select --set pip3 pip37
 pip=pip3
 python=python3
+
 if [ "$USER" = "travis" ]
 then
   pip=pip
