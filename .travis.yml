@@ -4,6 +4,9 @@ language: python
 python:
 #  - "2.7" # see https://github.com/WolfgangFahl/gremlin-python-tutorial/issues/7
   - "3.7"
+before_install:
+ # We need GraphViz to draw  
+ - "sudo apt-get install graphviz"
 # make sure the installation and server is run before starting the tests
 before_script:
   # install gremlin-server and python-gremlin
