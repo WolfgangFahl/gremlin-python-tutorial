@@ -6,3 +6,5 @@ gremlinpython
 pytest
 # yaml parsing
 pyyaml
+# graphviz
+graphviz
