@@ -17,4 +17,16 @@ def test_loadGraph():
    print ("%s has %d vertices" % (graphmlFile,vCount))
    assert vCount==47
 
+# test saving a graph
+def test_saveGraph():
+   graphmlPath="/tmp/A-Fish-Named-Wanda.xml"
+   # drop the existing content of the graph
+   g.V().drop().iterate()
+   g.addV("Fish").property("name","Wanda").iterate()
+   g.io(graphmlPath).write().iterate()
+   print("wrote graph to %s" % (graphmlPath))
+   # check that the graphml file exists
+   assert os.path.isfile(graphmlPath)
+
 test_loadGraph()
+test_saveGraph()
