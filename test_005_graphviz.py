@@ -23,10 +23,10 @@ def test_createGraphvizGraph():
         vLabel=vDict[T.label]
         # greate a graphviz node label
         # name property is alway there
-        gvLabel="%s\n%s\nname=%s" % (vId,vLabel,vDict["name"][0])
+        gvLabel=r"%s\n%s\nname=%s" % (vId,vLabel,vDict["name"][0])
         # if there is an age property add it to the label
         if "age" in vDict:
-            gvLabel=gvLabel+"\nage=%s" % (vDict["age"][0])
+            gvLabel=gvLabel+r"\nage=%s" % (vDict["age"][0])
         # create a graphviz node
         dot.node("node%d" % (vId),gvLabel)
     # loop over all edges
@@ -36,7 +36,7 @@ def test_createGraphvizGraph():
         # uncomment if you'd like to debug
         # print (e,eDict)
         # create a graphviz label
-        geLabel="%s\n%s\nweight=%s" % (e.id,e.label,eDict["weight"])
+        geLabel=r"%s\n%s\nweight=%s" % (e.id,e.label,eDict["weight"])
         # add a graphviz edge
         dot.edge("node%d" % (e.outV.id),"node%d" % (e.inV.id),label=geLabel)
     # modify the styling see http://www.graphviz.org/doc/info/attrs.html

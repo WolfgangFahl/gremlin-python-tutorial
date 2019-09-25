@@ -188,7 +188,8 @@ do
       ;;
     -p|--python)
       color_msg $blue "starting python test code"
-      $python gt1.py
+      $python test_000.py
+      $python test_001.py
       ;;
     -v|--version)
       color_msg $blue "apache-tinkerpop-gremlin version $version"
