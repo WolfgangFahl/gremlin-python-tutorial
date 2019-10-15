@@ -6,3 +6,4 @@ name: OrientDB
 password: rootpwd
 port: 8182
 username: root
+serializer: { className: org.apache.tinkerpop.gremlin. driver.ser.GraphSONMessageSerializerV1d0, config: { serializeResultToString: true }}
