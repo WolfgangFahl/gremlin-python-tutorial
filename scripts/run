@@ -3,8 +3,8 @@
 # test gremlin-python
 
 # see https://stackoverflow.com/questions/57936915/how-do-i-get-gremlin-python-with-gremlin-server-3-4-3-to-work
-version=3.4.3
-mirror=http://mirror.dkd.de/apache/tinkerpop/$version
+version=3.5.2
+mirror=https://dlcdn.apache.org/tinkerpop/$version
 gsd=apache-tinkerpop-gremlin-server-${version}
 gcd=apache-tinkerpop-gremlin-console-${version}
 # python and pip commands to be used
@@ -12,6 +12,7 @@ gcd=apache-tinkerpop-gremlin-console-${version}
 # e.g. with sudo port select --set pip3 pip37
 pip=pip3
 python=python3
+pyversion=3.9
 
 if [ "$USER" = "travis" ]
 then
@@ -127,11 +128,13 @@ checkinstalled() {
 
 # install prerequisites
 install() {
+  local l_pyversion="$1"
+  local l_pyversionNumeric=$(echo $1 | sed "s/\.//g")
   color_msg $blue "checking prerequisites ..."
   checkinstalled java "-version" "openjdk-8-jre" "openjdk8"
-  checkinstalled $python "--version" "python3.7" "python37"
-  checkinstalled $pip "--version" "python3.7-pip" "py37-pip"
-  checkinstalled pytest "--version" "python-pytest" "py37-pytest"
+  checkinstalled $python "--version" "python${l_pyversion}" "python${l_pyversionNumeric}"
+  checkinstalled $pip "--version" "python${l_pyversion}-pip" "py{$l_pyversionNumeric}-pip"
+  checkinstalled pytest "--version" "python-pytest" "py${l_pyversionNumeric}-pytest"
 
   for d in $gsd $gcd
   do
@@ -162,7 +165,7 @@ do
   shift
   case $option in
     -i|--install)
-      install;;
+      install $pyversion;;
     -s|--server)
       color_msg $blue "starting gremlin-server ..."
       #conf=$(realpath $gsd/conf/gremlin-server-modern-py.yaml)
@@ -190,6 +193,11 @@ do
       color_msg $blue "starting python test code"
       $python test_000.py
       $python test_001.py
+      ;;
+    -pv|--pythonversion)
+      shift
+      pyversion="$1"
+      color_msg $blue "using python version $pyversion"
       ;;
     -v|--version)
       color_msg $blue "apache-tinkerpop-gremlin version $version"
