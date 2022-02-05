@@ -1,7 +1,7 @@
 #!/bin/bash
 # WF 2022-01-21
 scripts/run -i
-scripts/run -s
+nohup scripts/run -s&
 scripts/install
 sleep 10
 pytest
