@@ -7,7 +7,6 @@ on:
     branches: [ master ]
 jobs:
   build:
-    name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
