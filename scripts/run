@@ -125,6 +125,20 @@ checkinstalled() {
   fi
 }
 
+#
+# get the realpath for the given path
+#
+getrealpath() {
+   local l_path="$1"
+   case $(uname) in
+      Darwin)
+        echo $(pwd)/$l_path
+        ;;
+      *)
+        realpath $l_path
+        ;;
+   esac
+}
 
 # install prerequisites
 install() {
@@ -167,9 +181,9 @@ do
     -i|--install)
       install $pyversion;;
     -s|--server)
-      color_msg $blue "starting gremlin-server ..."
       #conf=$(realpath $gsd/conf/gremlin-server-modern-py.yaml)
-      conf=$(realpath $gsd/conf/gremlin-server-modern.yaml)
+      conf=$(getrealpath $gsd/conf/gremlin-server-modern.yaml)
+      color_msg $blue "starting gremlin-server ... using $conf"
       $gsd/bin/gremlin-server.sh $conf
       ;;
     -n|--neo4j)
