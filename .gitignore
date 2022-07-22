@@ -112,3 +112,6 @@ apache-tinkerpop-gremlin-*
 
 # nohup.out files
 nohup.out
+
+# eclipse settings directory
+.settings
