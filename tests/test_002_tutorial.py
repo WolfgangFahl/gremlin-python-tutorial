@@ -1,10 +1,10 @@
 # see
 # http://wiki.bitplan.com/index.php/Gremlin_python#Getting_Started
-from tutorial import remote
+from gremlin import gremote
 from gremlin_python.process.graph_traversal import GraphTraversal
 
-# initialize a remote traversal
-remoteTraversal=remote.RemoteTraversal()
+# initialize a gremote traversal
+remoteTraversal=gremote.RemoteTraversal()
 g = remoteTraversal.g()
 # in TinkerGraph this is the first id
 id1=1

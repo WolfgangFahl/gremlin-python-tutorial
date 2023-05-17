@@ -3,12 +3,12 @@
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 from gremlin_python.driver.request import RequestMessage
-from tutorial import remote
+from gremlin import gremote
 
 # test a connection
 def test_connection():
     # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/gremlin_python/driver/driver_remote_connection.py
-    remoteTraversal=remote.RemoteTraversal()
+    remoteTraversal=gremote.RemoteTraversal()
     g = remoteTraversal.g()
     t=g.V()
     remoteConnection=remoteTraversal.remoteConnection

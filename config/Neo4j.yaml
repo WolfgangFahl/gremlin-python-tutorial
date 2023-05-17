@@ -1,8 +1,8 @@
-!!python/object:tutorial.remote.Server
+!!python/object:gremlin.remote.Server
 alias: g
 helpUrl: http://wiki.bitplan.com/index.php/Gremlin_python#Connecting_to_Gremlin_enabled_graph_databases
 host: localhost
-name: TinkerGraph
-password: null
+name: Neo4j
+password: neo4j
 port: 8182
-username: null
+username: neo4j

@@ -4,4 +4,4 @@ scripts/run -i
 nohup scripts/run -s&
 scripts/install
 sleep 10
-pytest
+scripts/test

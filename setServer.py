@@ -1,6 +1,6 @@
 # set the server configuration
 import argparse
-from tutorial import remote
+from gremlin import gremote
 
 # https://docs.python.org/2/library/argparse.html
 # prepare command line argument accepted
@@ -19,9 +19,9 @@ parser.add_argument('--helpUrl', default="http://wiki.bitplan.com/index.php/Grem
 args = parser.parse_args()
 
 # uncomment to debug
-remote.Server.debug=True
+gremote.Server.debug=True
 # try reading the server description from the yaml file with the given name
-server=remote.Server.read(args.name)
+server=gremote.Server.read(args.name)
 if server is None or args.rewrite:
-  server=remote.Server(host=args.host,port=args.port,alias=args.alias,name=args.name,username=args.username,password=args.password,debug=args.debug)
+  server=gremote.Server(host=args.host,port=args.port,alias=args.alias,name=args.name,username=args.username,password=args.password,debug=args.debug)
   server.write()

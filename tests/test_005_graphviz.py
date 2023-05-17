@@ -1,16 +1,16 @@
 # see https://github.com/WolfgangFahl/gremlin-python-tutorial/blob/master/test_005_graphviz.py
-from tutorial import remote
+from gremlin import gremote
 from graphviz import Digraph
 import os.path
 from gremlin_python.process.traversal import T
 
-# initialize a remote traversal
-g = remote.RemoteTraversal().g()
+# initialize a gremote traversal
+g = gremote.RemoteTraversal().g()
 
 # test creating a graphviz graph from the tinkerpop graph
 def test_createGraphvizGraph():
     # make sure we re-load the tinkerpop modern example
-    remoteTraversal=remote.RemoteTraversal()
+    remoteTraversal=gremote.RemoteTraversal()
     remoteTraversal.load("tinkerpop-modern.xml")
     # start a graphviz
     dot = Digraph(comment='Modern')

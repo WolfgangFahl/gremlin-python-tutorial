@@ -1,8 +1,8 @@
-from tutorial import remote
+from gremlin import gremote
 import os
 
-# initialize a remote traversal
-g = remote.RemoteTraversal().g()
+# initialize a gremote traversal
+g = gremote.RemoteTraversal().g()
 
 # test loading a graph
 def test_loadGraph():
