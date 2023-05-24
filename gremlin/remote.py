@@ -38,6 +38,12 @@ class RemoteTraversal:
         self.remoteConnection=DriverRemoteConnection(url,server.alias,username=server.username,password=server.password)
         g = traversal().withRemote(self.remoteConnection)
         return g
+    
+    def close(self):
+        """
+        close my connection
+        """
+        self.remoteConnection.close()
 
     @classmethod
     def load(self,g,graphmlFile):
