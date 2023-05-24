@@ -1,0 +1,63 @@
+# see https://flit.pypa.io/en/latest/pyproject_toml.html
+[build-system]
+#requires = ["flit_core >=3.2,<4"]
+#build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gremlin-python-tutorial"
+authors = [
+  {name = "Wolfgang Fahl", email = "wf@bitplan.com"},
+  {name = "Julian Vollmer", email = "julian.vollmer@rwth-aachen.de"}
+]
+maintainers = [
+  { name = "Wolfgang Fahl", email = "wf@bitplan.com" },
+  {name = "Julian Vollmer", email = "julian.vollmer@rwth-aachen.de"}
+]
+readme = "README.md"
+# flit_core.config.ConfigError: license field should be <class 'dict'>, not <class 'str'>
+license = { file="LICENSE" }
+dependencies = [
+		# https://pypi.org/project/gremlinpython/
+        'gremlinpython>=3.6.3',
+        # https://pypi.org/project/graphviz/
+        'graphviz>=0.20.1',
+        # https://pypi.org/project/PyYAML/
+        'PyYAML>=6.0'
+     ]
+
+requires-python = ">=3.8"
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License"
+    ]
+dynamic = ["version", "description"]
+[tool.hatch.version]
+path = "gremlin/__init__.py"
+
+[project.urls]
+Home = "https://github.com/WolfgangFahl/gremlin-python-tutorial"
+Documentation = "https://wiki.bitplan.com/index.php/Gremlin_python"
+Source = "https://github.com/WolfgangFahl/gremlin-python-tutorial"
+
+[project.optional-dependencies]
+test = [
+  "green",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "gremlin",
+]
+
