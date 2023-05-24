@@ -26,7 +26,8 @@ class TestExamples(BaseGremlinTest):
         self.examples.load_by_name(g,"tinkerpop-modern")
         v_count=g.V().count().next()
         g.V().toList()
-        print (f"graph imported has {v_count} vertices")
+        if self.debug:
+            print (f"graph imported has {v_count} vertices")
         assert v_count==6
         
     def test_grateful_dead(self):

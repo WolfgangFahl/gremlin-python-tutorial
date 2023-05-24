@@ -1,13 +1,18 @@
 # see https://github.com/WolfgangFahl/gremlin-python-tutorial/blob/master/test_001.py
-from gremlin import gremote
+from gremlin.remote import RemoteTraversal
+import unittest
 
-# initialize a gremote traversal
-g = gremote.RemoteTraversal().g()
+class TestModern(unittest.TestCase):
+    """
+    test Remote Traversal
+    """
 
-# test the number of vertices
-def test_LoadModern():
-    remoteTraversal=gremote.RemoteTraversal()
-    remoteTraversal.load("tinkerpop-modern.xml")
+    def test_LoadModern(self):
+        """
+        test loading the tinkerpop-modern graph
+        """
+        remoteTraversal=RemoteTraversal()
+        g=remoteTraversal.g()
+        remoteTraversal.load(g,"../data/tinkerpop-modern.xml")
 
-# call the loadModern test
-test_LoadModern()
+
