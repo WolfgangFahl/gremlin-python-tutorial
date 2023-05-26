@@ -1,5 +1,6 @@
 #!/bin/bash
 # WF 2019-09-17
+# improved WF 2023-05-26
 # test gremlin-python
 
 # see https://stackoverflow.com/questions/57936915/how-do-i-get-gremlin-python-with-gremlin-server-3-4-3-to-work
@@ -169,7 +170,7 @@ install() {
     fi
   done
   color_msg $blue "installing needed python modules"
-  sudo -H $pip install -r requirements.txt
+  pip install .
 }
 
 # commandline option
