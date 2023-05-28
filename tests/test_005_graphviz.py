@@ -13,7 +13,7 @@ class TestGraphvizGraph(BaseGremlinTest):
     def test_createGraphvizGraph(self):
         # make sure we re-load the tinkerpop modern example
         g=self.g
-        self.remote_traversal.load(g,"../data/tinkerpop-modern.xml")
+        self.remote_traversal.load(g,f"{self.data_path}/tinkerpop-modern.xml")
         # start a graphviz
         dot = Digraph(comment='Modern')
         # get vertice properties including id and label as dicts

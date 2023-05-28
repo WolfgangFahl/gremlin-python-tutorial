@@ -14,6 +14,16 @@ class Example:
         """
     
     def load(self,g,local_path:str,remote_path:str,force:bool=False):
+        """
+        download graph from remote_path to local_path depending on force flag
+        and load graph into g
+        
+        Args:
+            g(GraphTraversal): the target 
+            local_path(str): the path to the local copy
+            remote_path(str): the path to the remote copy (e.g. in a docker container)
+            force(bool): if True download even if local copy already exists
+        """
         self.download(local_path, force)
         graph_xml=f"{remote_path}/{self.name}.xml"
         RemoteTraversal.load(g, graph_xml)

@@ -7,8 +7,9 @@ import unittest
 from gremlin.remote import RemoteTraversal
 from gremlin.examples import Examples
 from gremlin.draw import GremlinDraw
+from tests.base_gremlin_test import BaseGremlinTest
 
-class TestDraw(unittest.TestCase):
+class TestDraw(BaseGremlinTest):
     """
     test graphviz draw access
     """
@@ -17,9 +18,9 @@ class TestDraw(unittest.TestCase):
         """
         test creating a graphviz graph from a gremlin graph
         """
-        rt=RemoteTraversal()
-        g=rt.g()
-        Examples.load_modern(g)
+        g=self.g
+        examples=Examples(remote_path=self.data_path)
+        examples.load_by_name(g, "tinkerpop-modern")
         gviz=GremlinDraw.show(g)
         self.assertEqual(12,len(gviz.body))
         pass

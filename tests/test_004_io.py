@@ -8,7 +8,7 @@ class TestIo(BaseGremlinTest):
     # test loading a graph
     def test_loadGraph(self):
         g=self.g
-        graphmlFile="../data/air-routes-small.xml";
+        graphmlFile=f"{self.data_path}/air-routes-small.xml";
         # make the local file accessible to the server
         airRoutesPath=os.path.abspath(graphmlFile)
         # drop the existing content of the graph
