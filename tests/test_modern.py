@@ -6,12 +6,12 @@ class TestModern(BaseGremlinTest):
     test Remote Traversal
     """
 
-    def test_LoadModern(self):
+    def test_load_modern(self):
         """
         test loading the tinkerpop-modern graph
         """
         g=self.g
-        self.rt.load(g,"../data/tinkerpop-modern.xml")
+        self.remote_traversal.load(g,"../data/tinkerpop-modern.xml")
         vCount=g.V().count().next()
         if self.debug:
             print ("g.V().count=%d" % (vCount))

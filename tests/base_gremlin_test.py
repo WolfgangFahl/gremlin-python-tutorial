@@ -16,9 +16,9 @@ class BaseGremlinTest(Basetest):
         prepare the test environment
         """
         Basetest.setUp(self, debug, profile)
-        self.rt=RemoteTraversal()
-        self.g=self.rt.g()
+        self.remote_traversal=RemoteTraversal()
+        self.g=self.remote_traversal.g()
         
     def tearDown(self):
         Basetest.tearDown(self)
-        self.rt.close()
+        self.remote_traversal.close()
