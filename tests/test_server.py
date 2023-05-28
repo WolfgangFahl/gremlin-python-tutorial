@@ -14,6 +14,6 @@ class TestServer(BaseGremlinTest):
         """
         test socket open
         """
-        is_open=self.rt.server.check_socket()
+        is_open=self.remote_traversal.server.check_socket()
         self.assertTrue(is_open)
         pass
