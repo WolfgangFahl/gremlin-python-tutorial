@@ -2,6 +2,5 @@
 # WF 2022-01-21
 scripts/run -i
 nohup scripts/run -s&
-scripts/install
 sleep 10
 scripts/test
