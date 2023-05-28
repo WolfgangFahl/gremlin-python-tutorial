@@ -11,7 +11,7 @@ class TestModern(BaseGremlinTest):
         test loading the tinkerpop-modern graph
         """
         g=self.g
-        self.remote_traversal.load(g,"../data/tinkerpop-modern.xml")
+        self.remote_traversal.load(g,f"{self.data_path}/tinkerpop-modern.xml")
         vCount=g.V().count().next()
         if self.debug:
             print ("g.V().count=%d" % (vCount))
