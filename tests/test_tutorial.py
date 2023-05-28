@@ -78,22 +78,30 @@ class TestTutorial(BaseGremlinTest):
             ==>e[8][1-knows->4]
         """
         vList=self.g.V(self.id1).outE("knows").toList()
-        if remoteTraversal.server.name=="Neo4j":
-          assert(len(vList)==2)
+        vListStr=self.log(vList)
+        if self.remote_traversal.server.name=="Neo4j":
+            self.assertEqual(2,len(vList))
         else:
-          assert asString(l) == "[e[7][1-knows->2], e[8][1-knows->4]]"
+            expected= "[e[7][1-knows->2], e[8][1-knows->4]]"
+            self.assertEqual(vListStr,expected)
     
-    #    gremlin> g.V(1).outE('knows').inV().values('name') //5\
-    #    ==>vadas
-    #    ==>josh
     def test_tutorial5(self):
-        l=g.V(id1).outE("knows").inV().values("name").toList()
-        assert asString(l)=="['vadas', 'josh']" or asString(l)=="['josh', 'vadas']"
+        """
+        gremlin> g.V(1).outE('knows').inV().values('name') //5\
+            ==>vadas
+            ==>josh
+        """
+        vList=self.g.V(self.id1).outE("knows").inV().values("name").toList()
+        vListStr=self.log(vList)
+        self.assertTrue(vListStr=="['vadas', 'josh']" or vListStr=="['josh', 'vadas']")
     
-    #     gremlin> g.V(1).out('knows').values('name') //6\
-    #    ==>vadas
-    #    ==>josh
     def test_tutorial6(self):
-        l=g.V(id1).out("knows").values("name").toList()
-        assert asString(l)=="['vadas', 'josh']" or asString(l)=="['josh', 'vadas']"
-
+        """
+        gremlin> g.V(1).out('knows').values('name') //6\
+            ==>vadas
+            ==>josh
+        """
+        vList=self.g.V(self.id1).out("knows").values("name").toList()
+        vListStr=self.log(vList)
+        self.assertTrue(vListStr=="['vadas', 'josh']" or vListStr=="['josh', 'vadas']")
+    
