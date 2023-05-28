@@ -14,7 +14,7 @@ class TestExamples(BaseGremlinTest):
     
     def setUp(self, debug=False, profile=True):
         BaseGremlinTest.setUp(self, debug=debug, profile=profile)
-        self.examples=Examples()
+        self.examples=Examples(remote_path=self.data_path)
         if not self.inPublicCI():
             self.examples.remote_examples_path=self.examples.local_examples_path
                 
@@ -62,10 +62,3 @@ class TestExamples(BaseGremlinTest):
         g.V().toList()
         print (f"graph imported has {v_count} vertices")
         assert v_count==3749
-        
-        
-
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
