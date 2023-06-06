@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/tests/driver/test_client.py
+from os.path import abspath, dirname
 from gremlin_python.driver.request import RequestMessage
 from gremlin.remote import RemoteTraversal
 from tests.basetest import Basetest
@@ -11,7 +12,8 @@ class TestConnection(Basetest):
     # test a connection
     def test_connection(self):
         # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/gremlin_python/driver/driver_remote_connection.py
-        remoteTraversal=RemoteTraversal()
+        script_path = dirname(abspath(__file__))
+        remoteTraversal=RemoteTraversal(config_path=f"{script_path}/../config")
         g = remoteTraversal.g()
         t=g.V()
         remoteConnection=remoteTraversal.remoteConnection
