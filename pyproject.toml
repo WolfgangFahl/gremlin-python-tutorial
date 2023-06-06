@@ -43,8 +43,17 @@ classifiers=[
     "License :: OSI Approved :: Apache Software License"
     ]
 dynamic = ["version", "description"]
+
 [tool.hatch.version]
 path = "gremlin/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["gremlin", "config", "data"]
+
+[tool.hatch.build.targets.wheel.sources]
+"gremlin" = "gremlin"
+"config" = "gremlin/config"
+"data" = "gremlin/data"
 
 [project.urls]
 Home = "https://github.com/WolfgangFahl/gremlin-python-tutorial"
@@ -54,10 +63,5 @@ Source = "https://github.com/WolfgangFahl/gremlin-python-tutorial"
 [project.optional-dependencies]
 test = [
   "green",
-]
-
-[tool.hatch.build.targets.wheel]
-packages = [
-  "gremlin",
 ]
 

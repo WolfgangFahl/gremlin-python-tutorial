@@ -40,12 +40,7 @@ class GremlinDraw:
             kvp_list.pop(0) # pop out
             edge_properties = ""
             for key,val in kvp_list:
-                edge_properties += "\n " + str(key) + ": " + str(val);
+                edge_properties += "\n " + str(key) + ": " + str(val)
                 
-                # list(list(e.values())[2].values())[0]
-                # str(g.E(e).inV().next().id)
-                # str(g.E(e).outV().next().id)
-                # list(e.values())[0]
-            
             G.edge(tail_name = str(list(list(e.values())[3].values())[0]), head_name = str(list(list(e.values())[2].values())[0]), style = "setlinewidth(3)", label = str(list(e.values())[0]) + "\n" + str(list(e.values())[1]) +  "\n" + '─' * 5 + edge_properties, fontname = "arial")
         return G

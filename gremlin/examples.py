@@ -1,3 +1,4 @@
+from os.path import abspath, dirname
 import urllib.request
 import os
 from pathlib import Path
@@ -15,7 +16,7 @@ class Example:
         self,
         g: GraphTraversalSource,
         local_path: str,
-        remote_path: str,
+        remote_path: str = str(abspath(f"{dirname(abspath(__file__))}/data")),
         force: bool = False
     ) -> None:
         """
@@ -61,7 +62,7 @@ class Examples:
     Examples 
     """
     
-    def __init__(self, remote_path = "/opt/gremlin-server/data"):
+    def __init__(self, remote_path: str = str(abspath(f"{dirname(abspath(__file__))}/data"))):
         home = str(Path.home())
         self.local_examples_path=f"{home}/.gremlin-examples"
         os.makedirs(self.local_examples_path, exist_ok=True)  
@@ -75,7 +76,7 @@ class Examples:
         ]:
             self.examples_by_name[example.name]=example
         
-    def load_by_name(self,g: GraphTraversalSource, name: str) -> None:
+    def load_by_name(self, g: GraphTraversalSource, name: str) -> None:
         """
         load an example by name to the given graph
         
