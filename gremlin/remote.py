@@ -3,7 +3,7 @@ Created on 2019-09-17
 
 @author: wf
 '''
-from gremlin_python.process.anonymous_traversal import traversal
+from gremlin_python.process.anonymous_traversal import GraphTraversalSource, traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 import os.path
 from os.path import dirname, abspath
@@ -12,12 +12,14 @@ import yaml
 import socket
 from contextlib import closing
 
+from typing import Optional
+
 class RemoteTraversal:
     """
     helper class for Apache Tinkerpop Gremlin Python GLV remote access
     """
 
-    def __init__(self,serverName='server',config_path:str=None):
+    def __init__(self, serverName:str = 'server', config_path:Optional[str] = None) -> None:
         """
         constructor
         
@@ -26,9 +28,12 @@ class RemoteTraversal:
         """
         self.server=Server.read(serverName,config_path)
    
-    def g(self):
+    def g(self) -> GraphTraversalSource:
         """
-        get the graph traversal
+        get the graph traversal source
+
+        Returns:
+            the graph traversal source
         """
         server=self.server
         url=f'ws://{server.host}:{server.port}/gremlin' 
@@ -39,14 +44,14 @@ class RemoteTraversal:
         g = traversal().withRemote(self.remoteConnection)
         return g
     
-    def close(self):
+    def close(self) -> None:
         """
         close my connection
         """
         self.remoteConnection.close()
 
-    @classmethod
-    def load(self,g,graphmlFile):
+    @staticmethod
+    def load(g: GraphTraversalSource, graphmlFile) -> None:
         """
         load the given graph from the given graphmlFile
         """
@@ -56,9 +61,12 @@ class RemoteTraversal:
         g.V().drop().iterate()
         # read the content from the graphmlFile
         g.io(xmlPath).read().iterate()
-        
-    @classmethod
-    def clear(cls,g):
+    
+    @staticmethod
+    def clear(g: GraphTraversalSource) -> None:
+        """
+        clear the given graph
+        """
         g.V().drop().iterate()
 
 class Server:
@@ -68,7 +76,30 @@ class Server:
     debug=False
 
     # construct me with the given alias
-    def __init__(self,host='localhost',port=8182,alias='g',name='TinkerGraph',username=None,password=None,debug=False,helpUrl='http://wiki.bitplan.com/index.php/Gremlin_python#Connecting_to_Gremlin_enabled_graph_databases'):
+    def __init__(
+        self,
+        host: str = 'localhost',
+        port: int = 8182,
+        alias: str ='g',
+        name: str = 'TinkerGraph',
+        username: str = '',
+        password: str = '',
+        debug: bool = False,
+        helpUrl: str = 'http://wiki.bitplan.com/index.php/Gremlin_python#Connecting_to_Gremlin_enabled_graph_databases'
+    ) -> None:
+        """
+        constructor
+
+        Args:
+            host(str): the host to connect to
+            port(int): the port to connect to
+            alias(str): the alias to use
+            name(str): the name of the server
+            username(Optional[str]): the username to use
+            password(Optional[str]): the password to use
+            debug(bool): True if debug output should be generated
+            helpUrl(str): the help url to use
+        """
         self.host=host
         self.port=port
         self.alias=alias
@@ -78,7 +109,7 @@ class Server:
         Server.debug=debug
         self.helpUrl=helpUrl
         
-    def check_socket(self)->bool:
+    def check_socket(self) -> bool:
         """
         check my socket
         
@@ -90,13 +121,23 @@ class Server:
             return is_open
 
     # return a readable representation of me
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "%s(%r)" % (self.__class__, self.__dict__)
 
     @staticmethod
-    def read(name:str,config_path:str=None):
+    def read(name:str, config_path: Optional[str] = None) -> "Server":
         """
         read me from a yaml file
+
+        Args:
+            name(str): the name of the server
+            config_path(str): the path to the config files
+
+        Returns:
+            the server
+
+        Raises:
+            Exception: if the yaml file is missing
         """
         if config_path is None:
             script_path = dirname(abspath(__file__))
@@ -116,7 +157,10 @@ class Server:
 
 
     # write me to my yaml file
-    def write(self):
+    def write(self) -> None:
+        """
+        write me to my yaml file
+        """
         yamlFile=self.name+".yaml"
         with io.open(yamlFile,'w',encoding='utf-8') as stream:
             yaml.dump(self,stream)

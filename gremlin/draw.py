@@ -4,10 +4,15 @@ Created on 2023-05-15
 @author: jv
 '''
 import graphviz
+from gremlin_python.process.anonymous_traversal import GraphTraversalSource
+
 class GremlinDraw:
-    @classmethod
-    def show(cls,g,title:str="Gremlin", v_limit:int=10, e_limit:int=10):
-        G = graphviz.Digraph(title,format="pdf")
+    @staticmethod
+    def show(g: GraphTraversalSource, title:str="Gremlin", v_limit:int=10, e_limit:int=10) -> graphviz.Digraph:
+        """
+        draw the given graph
+        """
+        G: graphviz.Digraph = graphviz.Digraph(title,format="pdf")
         
         # draw vertices
         vlist = g.V().toList()
