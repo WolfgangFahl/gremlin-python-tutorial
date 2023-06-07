@@ -204,6 +204,10 @@ do
       color_msg $blue "starting gremlin-console ..."
       $gcd/bin/gremlin.sh
       ;;
+    -cd|--console_docker)
+      color_msg $blue "starting gremlin-console via Docker..."
+      docker run -it tinkerpop/gremlin-console:$version
+      ;;
     -p|--python)
       color_msg $blue "starting python test code"
       $python test_000.py
