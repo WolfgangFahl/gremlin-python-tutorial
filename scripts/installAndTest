@@ -2,6 +2,6 @@
 # WF 2022-01-21
 scripts/run -i
 nohup scripts/run -s&
+echo "waiting for server"
 sleep 10
-export PYTHON_PATH="."
 scripts/test

@@ -36,7 +36,7 @@ class RemoteTraversal:
         #username="root"
         #password="rootpwd"
         self.remoteConnection=DriverRemoteConnection(url,server.alias,username=server.username,password=server.password)
-        g = traversal().withRemote(self.remoteConnection)
+        g = traversal().with_remote(self.remoteConnection)
         return g
     
     def close(self):

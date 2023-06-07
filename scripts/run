@@ -57,12 +57,14 @@ error() {
 #
 usage() {
   echo "usage: $0  [-c|-h|-i|-n|-p|-s|-t|-v]"
-  echo "  -c|--console: start console"
+  echo "  -c|--console: start groovy console"
+  echo "  -cd|--console_docker: start groovy console via docker"
   echo "  -h|--help: show this usage"
   echo "  -i|--install: install prerequisites"
   echo "  -n|--neo4j: start neo4j server"
   echo "  -p|--python: start python trial code"
   echo "  -s|--server: start server"
+  echo "  -sd|--server_server: start server via docker"
   echo "  -t|--test: start pytest"
   echo "  -v|--version: show version"
   exit 1
@@ -187,6 +189,10 @@ do
       color_msg $blue "starting gremlin-server ... using $conf"
       $gsd/bin/gremlin-server.sh $conf
       ;;
+    -sd|--server_docker)
+      color_msg $blue "starting gremlin-server via Docker ..."
+      docker run -p 8182:8182 tinkerpop/gremlin-server:$version conf/gremlin-server-modern.yaml
+      ;;
     -n|--neo4j)
       plugin=neo4j-gremlin
       if [ ! -d $gsd/ext/$plugin ]
@@ -210,8 +216,7 @@ do
       ;;
     -p|--python)
       color_msg $blue "starting python test code"
-      $python test_000.py
-      $python test_001.py
+      $python -m unittest tests/test_tutorial.py
       ;;
     -pv|--pythonversion)
       shift
