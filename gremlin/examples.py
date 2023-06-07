@@ -13,7 +13,7 @@ class Example:
         """
         """
     
-    def load(self,g,local_path:str,remote_path:str,force:bool=False):
+    def load(self,g,local_path:str,remote_path:str,force:bool=False,debug:bool=False):
         """
         download graph from remote_path to local_path depending on force flag
         and load graph into g
@@ -23,13 +23,14 @@ class Example:
             local_path(str): the path to the local copy
             remote_path(str): the path to the remote copy (e.g. in a docker container)
             force(bool): if True download even if local copy already exists
+            debug(bool): if True show debugging information
         """
-        self.download(local_path, force)
+        self.download(local_path, force=force,debug=debug)
         graph_xml=f"{remote_path}/{self.name}.xml"
         RemoteTraversal.load(g, graph_xml)
         pass
     
-    def download(self,path,force:bool=False)->str:
+    def download(self,path,force:bool=False,debug:bool=False)->str:
         """
         load the graphml xml file from the given url and store it to the given file_name (prefix)
         
@@ -37,6 +38,7 @@ class Example:
             url(str): the url to use
             file_name(str): the name of the file to load
             force(bool): if True overwrite
+            debug(bool): if True show debugging information
             
         Returns:
             str: the filename loaded
@@ -48,7 +50,11 @@ class Example:
             stats=os.stat(graph_xml)
             size=stats.st_size
             force=force or size==0
+            if debug:
+                print(f"{graph_xml}(size {size}) already downloaded ...")
         if not os.path.exists(graph_xml) or force:
+            if debug:
+                print(f"downloading {self.url} to {graph_xml} ...")
             graph_data = urllib.request.urlopen(self.url).read().decode("utf-8")
             print(graph_data,  file=open(graph_xml, 'w'))
         return graph_xml
@@ -58,9 +64,17 @@ class Examples:
     Examples 
     """
     
-    def __init__(self,remote_path="/opt/gremlin-server/data"):
+    def __init__(self,remote_path="/opt/gremlin-server/data",debug:bool=False):
         """
+        Constructor
+        
+        Args:
+            remote_path(str): path for gremlin-server (e.g. in docker)
+            local_path(str): path for local files
+            debug(bool): if true switch on debugging
+        
         """
+        self.debug=debug
         home = str(Path.home())
         self.local_examples_path=f"{home}/.gremlin-examples"
         os.makedirs(self.local_examples_path, exist_ok=True)  
@@ -83,6 +97,6 @@ class Examples:
         """
         if name in self.examples_by_name:
             example=self.examples_by_name[name]
-            example.load(g,self.local_examples_path,self.remote_examples_path)
+            example.load(g,self.local_examples_path,self.remote_examples_path,debug=self.debug)
         else:
             raise Exception(f"invalid example {name}")

@@ -12,9 +12,9 @@ class TestExamples(BaseGremlinTest):
 
     """
     
-    def setUp(self, debug=False, profile=True):
+    def setUp(self, debug=True, profile=True):
         BaseGremlinTest.setUp(self, debug=debug, profile=profile)
-        self.examples=Examples(remote_path=self.data_path)
+        self.examples=Examples(remote_path=self.data_path,debug=self.debug)
         if not self.inPublicCI():
             self.examples.remote_examples_path=self.examples.local_examples_path
                 
