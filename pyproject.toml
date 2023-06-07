@@ -20,7 +20,7 @@ readme = "README.md"
 license = { file="LICENSE" }
 dependencies = [
 		# https://pypi.org/project/gremlinpython/
-        'gremlinpython>=3.6.3',
+        'gremlinpython>=3.6.4',
         # https://pypi.org/project/graphviz/
         'graphviz>=0.20.1',
         # https://pypi.org/project/PyYAML/
