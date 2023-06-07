@@ -26,8 +26,8 @@ wait_for_server() {
     echo "$l_wait_time secs left ..."
   done
 }
-#install
-#run_server
+install
+run_server
 wait_for_server 10
 
-#scripts/test
+scripts/test
