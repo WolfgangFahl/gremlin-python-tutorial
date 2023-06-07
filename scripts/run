@@ -191,7 +191,7 @@ do
       ;;
     -sd|--server_docker)
       color_msg $blue "starting gremlin-server via Docker ..."
-      docker run -p 8182:8182 tinkerpop/gremlin-server:$version conf/gremlin-server-modern.yaml
+      docker run --name gremlin-server -v $HOME/.gremlin-examples:/opt/gremlin-server/data/examples -p 8182:8182 tinkerpop/gremlin-server:$version conf/gremlin-server-modern.yaml 
       ;;
     -n|--neo4j)
       plugin=neo4j-gremlin
@@ -212,7 +212,7 @@ do
       ;;
     -cd|--console_docker)
       color_msg $blue "starting gremlin-console via Docker..."
-      docker run -it tinkerpop/gremlin-console:$version
+      docker run -it tinkerpop/gremlin-console:$version --name gremlin-console
       ;;
     -p|--python)
       color_msg $blue "starting python test code"
