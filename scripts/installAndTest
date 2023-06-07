@@ -3,4 +3,5 @@
 scripts/run -i
 nohup scripts/run -s&
 sleep 10
+export PYTHON_PATH="."
 scripts/test
