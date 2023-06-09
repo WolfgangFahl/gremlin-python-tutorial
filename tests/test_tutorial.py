@@ -16,6 +16,7 @@ class TestTutorial(BaseGremlinTest):
         # in TinkerGraph this is the first id
         # get id of Marko's vertex which is usually 1 but might be different e.g.
         # when Neo4j is used
+        self.remote_traversal.load(self.g,f"{self.data_path}/tinkerpop-modern.xml")
         l=self.g.V().toList()
         self.id1=l[0].id
 

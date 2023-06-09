@@ -11,10 +11,16 @@ install() {
 #
 # run the server
 #
-run_server() {
+run_server_docker() {
   docker stop gremlin-server
   docker rm gremlin-server
+  rm nohup.out
   nohup scripts/run -sd&
+}
+
+run_server() {
+  rm nohup.out
+  nohup scripts/run -s&
 }
 
 # wait for server for the given number of seconds
@@ -30,7 +36,7 @@ wait_for_server() {
     grep "Channel started at port 8182" nohup.out
     if [ $? -eq 0 ]
     then
-      break
+      return
     fi
     l_wait_time=$((l_wait_time-1))
     echo "$l_wait_time secs left ..."
