@@ -1,16 +1,26 @@
 #!/bin/bash
 # WF 2022-01-21
 
+#
+# install the python librarx
+#
 install() {
   pip install .
 }
 
+#
+# run the server
+#
 run_server() {
   docker stop gremlin-server
   docker rm gremlin-server
   nohup scripts/run -sd&
 }
 
+# wait for server for the given number of seconds
+#
+#  Args:
+#   1: l_wait_time - wait time in seconds
 wait_for_server() {
   local l_wait_time="$1"
   echo "waiting up to $l_wait_time secs for server"
@@ -25,6 +35,8 @@ wait_for_server() {
     l_wait_time=$((l_wait_time-1))
     echo "$l_wait_time secs left ..."
   done
+  echo "Server start failed"
+  exit 1
 }
 install
 run_server
