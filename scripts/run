@@ -208,6 +208,10 @@ do
       conf=$(realpath $gsd/conf/gremlin-server-neo4j.yaml)
       $gsd/bin/gremlin-server.sh $conf
       ;;
+    -b|--bash)
+      color_msg $blue "starting docker bash"
+      docker exec -it  gremlin-server /bin/bash
+      ;;
     -c|--console)
       color_msg $blue "starting gremlin-console ..."
       $gcd/bin/gremlin.sh

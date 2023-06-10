@@ -20,6 +20,7 @@ class BaseGremlinTest(Basetest):
         self.remote_traversal=RemoteTraversal()
         self.g=self.remote_traversal.g()
         script_path = dirname(abspath(__file__))
+        # docker path
         self.data_path=abspath(f"/opt/gremlin-server/data/examples/")
         
     def tearDown(self):

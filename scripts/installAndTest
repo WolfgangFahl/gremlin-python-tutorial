@@ -45,7 +45,7 @@ wait_for_server() {
   exit 1
 }
 install
-run_server
+run_server_docker
 wait_for_server 10
 
 scripts/test
