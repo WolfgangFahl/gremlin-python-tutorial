@@ -15,7 +15,7 @@ run_server_docker() {
   docker stop gremlin-server
   docker rm gremlin-server
   rm nohup.out
-  nohup scripts/run -sd&
+  nohup scripts/run -sd >nohup.out 2>&1 &
 }
 
 run_server() {
