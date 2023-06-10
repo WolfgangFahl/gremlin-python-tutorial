@@ -18,6 +18,7 @@ run_server_docker() {
   nohup scripts/run -sd >nohup.out 2>&1 &
 }
 
+# run the server locally
 run_server() {
   rm nohup.out
   nohup scripts/run -s&
@@ -42,6 +43,7 @@ wait_for_server() {
     echo "$l_wait_time secs left ..."
   done
   echo "Server start failed"
+  cat nohup.out
   exit 1
 }
 install
