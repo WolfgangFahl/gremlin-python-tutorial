@@ -191,7 +191,7 @@ do
       ;;
     -sd|--server_docker)
       example_dir=$HOME/.gremlin-examples
-      if [ ! -d $example_dir]
+      if [ ! -d $example_dir ]
       then
         color_msg $blue "create example directory $example_dir ..."
         mkdir -p $example_dir
