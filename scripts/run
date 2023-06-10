@@ -190,9 +190,18 @@ do
       $gsd/bin/gremlin-server.sh $conf
       ;;
     -sd|--server_docker)
+      example_dir=$HOME/.gremlin-examples
+      if [ ! -d $example_dir]
+      then
+        color_msg $blue "create example directory $example_dir ..."
+        mkdir -p $example_dir
+      else
+        color_msg $green "example directory $example_dir already exists ..."
+      fi
+
       color_msg $blue "starting gremlin-server via Docker ..."
       #  export GREMLIN_YAML=/opt/gremlin-server/conf/gremlin-server.yaml
-      docker run --name gremlin-server -v $HOME/.gremlin-examples:/opt/gremlin-server/data/examples -p 8182:8182 tinkerpop/gremlin-server:$version conf/gremlin-server.yaml
+      docker run --name gremlin-server -v $example_dir:/opt/gremlin-server/data/examples -p 8182:8182 tinkerpop/gremlin-server:$version conf/gremlin-server.yaml
       #
       ;;
     -n|--neo4j)
