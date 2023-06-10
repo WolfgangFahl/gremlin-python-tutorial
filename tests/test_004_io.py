@@ -1,5 +1,6 @@
 import os
 from tests.base_gremlin_test import BaseGremlinTest
+import tempfile
 class TestIo(BaseGremlinTest):
     """
     test Io handling
@@ -24,7 +25,7 @@ class TestIo(BaseGremlinTest):
     # test saving a graph
     def test_saveGraph(self):
         g=self.g
-        graphmlPath="/tmp/A-Fish-Named-Wanda.xml"
+        graphmlPath = os.path.join(tempfile.mkdtemp(), 'A-Fish-Named-Wanda.xml')
         # drop the existing content of the graph
         g.V().drop().iterate()
         g.addV("Fish").property("name","Wanda").iterate()
