@@ -4,7 +4,7 @@ Created on 2023-01-15
 @author: wf
 '''
 from tests.base_gremlin_test import BaseGremlinTest
-from gremlin.examples import Examples
+
 
 class TestExamples(BaseGremlinTest):
     """
@@ -14,7 +14,6 @@ class TestExamples(BaseGremlinTest):
     
     def setUp(self, debug=True, profile=True):
         BaseGremlinTest.setUp(self, debug=debug, profile=profile)
-        self.examples=Examples(remote_path=self.data_path,debug=self.debug)
         #if not self.inPublicCI():
         #    self.examples.remote_examples_path=self.examples.local_examples_path
                 

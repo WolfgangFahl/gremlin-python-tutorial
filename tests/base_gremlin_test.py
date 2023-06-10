@@ -6,6 +6,7 @@ Created on 2023-03-23
 from os.path import dirname, abspath
 from tests.basetest import Basetest
 from gremlin.remote import RemoteTraversal
+from gremlin.examples import Examples
 
 class BaseGremlinTest(Basetest):
     """
@@ -22,6 +23,7 @@ class BaseGremlinTest(Basetest):
         script_path = dirname(abspath(__file__))
         # docker path
         self.data_path=abspath(f"/opt/gremlin-server/data/examples/")
+        self.examples=Examples(remote_path=self.data_path,debug=self.debug)
         
     def tearDown(self):
         """
