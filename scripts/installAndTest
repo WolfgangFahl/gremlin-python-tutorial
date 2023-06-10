@@ -12,9 +12,16 @@ install() {
 # run the server
 #
 run_server_docker() {
-  docker stop gremlin-server
-  docker rm gremlin-server
-  rm nohup.out
+  docker ps |  grep gremlin-server
+  if [ $? -eq 0 ]
+  then
+    docker stop gremlin-server
+    docker rm gremlin-server
+  fi
+  if [ -f nohup.out]
+  then
+    rm nohup.out
+  fi
   nohup scripts/run -sd >nohup.out 2>&1 &
 }
 
