@@ -16,7 +16,7 @@ class TestTutorial(BaseGremlinTest):
         # in TinkerGraph this is the first id
         # get id of Marko's vertex which is usually 1 but might be different e.g.
         # when Neo4j is used
-        self.remote_traversal.load(self.g,f"{self.data_path}/tinkerpop-modern.xml")
+        self.examples.load_by_name(self.g, "tinkerpop-modern")
         l=self.g.V().toList()
         self.id1=l[0].id
 
@@ -25,7 +25,8 @@ class TestTutorial(BaseGremlinTest):
         convert thing to string and print out for debugging
         """
         text=str(thing)
-        print (text)
+        if self.debug:
+            print (text)
         return text
 
     def test_tutorial1(self):
@@ -51,7 +52,6 @@ class TestTutorial(BaseGremlinTest):
         vListStr=self.log(vList)
         expected=f"[v[{self.id1}], v[{self.id1+1}], v[{self.id1+2}], v[{self.id1+3}], v[{self.id1+4}], v[{self.id1+5}]]"
         self.assertEqual(vListStr,expected)
-
     
     def test_tutorial2(self):
         """
@@ -105,4 +105,3 @@ class TestTutorial(BaseGremlinTest):
         vList=self.g.V(self.id1).out("knows").values("name").to_list()
         vListStr=self.log(vList)
         self.assertTrue(vListStr=="['vadas', 'josh']" or vListStr=="['josh', 'vadas']")
-    

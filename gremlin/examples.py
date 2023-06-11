@@ -5,6 +5,56 @@ from gremlin.remote import RemoteTraversal
 from dataclasses import dataclass
 
 @dataclass
+class Volume:
+    """
+    map a local path on the client to a remote
+    path on a server e.g. when using a Volume in a docker
+    container
+    """
+    local_path: str
+    remote_path: str
+    
+    def local(self,file_name:str):
+        """
+        return the local mapping of the given file_name
+        
+        Args:
+            file_name(str): the file name to map
+        Returns:
+            str: the local path
+        """
+        path=f"{self.local_path}/{file_name}"
+        return path
+    
+    def remote(self,file_name:str):
+        """
+        return the remote mapping of the given file_name
+        
+        Args:
+            file_name(str): the file name to map
+        Returns:
+            str: the remote path
+        """
+        path=f"{self.remote_path}/{file_name}"
+        return path
+        
+    
+    @classmethod
+    def docker(cls)->"Volume":
+        """
+        get the default docker volume mapping
+        
+        Returns:
+            Volume: the local_path/remote_path mapping
+        """
+        home = str(Path.home())
+        local_path=f"{home}/.gremlin-examples"
+        os.makedirs(local_path, exist_ok=True)  
+        remote_path="/opt/gremlin-server/data/examples"
+        volume=Volume(local_path=local_path,remote_path=remote_path)
+        return volume
+    
+@dataclass
 class Example:
     name:str
     url:str
@@ -13,20 +63,19 @@ class Example:
         """
         """
     
-    def load(self,g,local_path:str,remote_path:str,force:bool=False,debug:bool=False):
+    def load(self,g,volume:Volume,force:bool=False,debug:bool=False):
         """
         download graph from remote_path to local_path depending on force flag
         and load graph into g
         
         Args:
             g(GraphTraversal): the target 
-            local_path(str): the path to the local copy
-            remote_path(str): the path to the remote copy (e.g. in a docker container)
+            volume:Volume
             force(bool): if True download even if local copy already exists
             debug(bool): if True show debugging information
         """
-        self.download(local_path, force=force,debug=debug)
-        graph_xml=f"{remote_path}/{self.name}.xml"
+        self.download(volume.local_path, force=force,debug=debug)
+        graph_xml=f"{volume.remote_path}/{self.name}.xml"
         RemoteTraversal.load(g, graph_xml)
         pass
     
@@ -64,21 +113,17 @@ class Examples:
     Examples 
     """
     
-    def __init__(self,remote_path="/opt/gremlin-server/data",debug:bool=False):
+    def __init__(self,volume,debug:bool=False):
         """
         Constructor
         
         Args:
-            remote_path(str): path for gremlin-server (e.g. in docker)
-            local_path(str): path for local files
+            volume:Volume
             debug(bool): if true switch on debugging
         
         """
         self.debug=debug
-        home = str(Path.home())
-        self.local_examples_path=f"{home}/.gremlin-examples"
-        os.makedirs(self.local_examples_path, exist_ok=True)  
-        self.remote_examples_path=remote_path
+        self.volume=volume
         self.examples_by_name={}
         for example in [
             Example(name="tinkerpop-modern",url="https://raw.githubusercontent.com/apache/tinkerpop/master/data/tinkerpop-modern.xml"),
@@ -97,6 +142,6 @@ class Examples:
         """
         if name in self.examples_by_name:
             example=self.examples_by_name[name]
-            example.load(g,self.local_examples_path,self.remote_examples_path,debug=self.debug)
+            example.load(g,self.volume,debug=self.debug)
         else:
             raise Exception(f"invalid example {name}")

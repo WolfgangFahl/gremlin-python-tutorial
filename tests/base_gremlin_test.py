@@ -3,10 +3,9 @@ Created on 2023-03-23
 
 @author: wf
 '''
-from os.path import dirname, abspath
 from tests.basetest import Basetest
 from gremlin.remote import RemoteTraversal
-from gremlin.examples import Examples
+from gremlin.examples import Examples, Volume
 
 class BaseGremlinTest(Basetest):
     """
@@ -20,10 +19,8 @@ class BaseGremlinTest(Basetest):
         Basetest.setUp(self, debug, profile)
         self.remote_traversal=RemoteTraversal()
         self.g=self.remote_traversal.g()
-        script_path = dirname(abspath(__file__))
-        # docker path
-        self.data_path=abspath(f"/opt/gremlin-server/data/examples/")
-        self.examples=Examples(remote_path=self.data_path,debug=self.debug)
+        self.volume=Volume.docker()
+        self.examples=Examples(volume=self.volume,debug=self.debug)
         
     def tearDown(self):
         """
