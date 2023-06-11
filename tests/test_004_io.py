@@ -25,7 +25,7 @@ class TestIo(BaseGremlinTest):
     # test saving a graph
     def test_saveGraph(self):
         g=self.g
-        graphMl="A-Fish-Named-Wanda.xml"
+        graphMl="a_fish_named_wanda.xml"
         # drop the existing content of the graph
         g.V().drop().iterate()
         g.addV("Fish").property("name","Wanda").iterate()
@@ -34,5 +34,3 @@ class TestIo(BaseGremlinTest):
             print(f"wrote graph to {self.volume.remote(graphMl)}")
         # check that the graphml file exists
         assert os.path.isfile(self.volume.local(graphMl))
-
-
