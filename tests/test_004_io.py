@@ -25,12 +25,22 @@ class TestIo(BaseGremlinTest):
     # test saving a graph
     def test_saveGraph(self):
         g=self.g
-        graphMl="a_fish_named_wanda.xml"
+        graphMl="/tmp/a_fish_named_wanda.xml"
         # drop the existing content of the graph
         g.V().drop().iterate()
         g.addV("Fish").property("name","Wanda").iterate()
-        g.io(self.volume.remote(graphMl)).write().iterate()
+        g.io(graphMl).write().iterate()
         if self.debug:
-            print(f"wrote graph to {self.volume.remote(graphMl)}")
+            print(f"wrote graph to {graphMl}")
+        g.V().drop().iterate()
+        g.io(graphMl).read().iterate()
+        vCount=g.V().count().next()
+        debug=self.debug
+        debug=True
+        if debug:
+            print (f"{graphMl} has {vCount} vertices")
+        assert vCount==1
         # check that the graphml file exists
-        assert os.path.isfile(self.volume.local(graphMl))
+        # unfortunately this doesn't work as of 2023-06-11
+        # in the github CI
+        #assert os.path.isfile(self.volume.local(graphMl))
