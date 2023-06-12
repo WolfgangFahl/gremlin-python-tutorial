@@ -1,6 +1,61 @@
 #!/bin/bash
 # WF 2022-01-21
-scripts/run -i
-nohup scripts/run -s&
-sleep 10
+
+#
+# install the python librarx
+#
+install() {
+  pip install .
+}
+
+#
+# run the server
+#
+run_server_docker() {
+  docker ps |  grep gremlin-server
+  if [ $? -eq 0 ]
+  then
+    docker stop gremlin-server
+    docker rm gremlin-server
+  fi
+  if [ -f nohup.out ]
+  then
+    rm nohup.out
+  fi
+  nohup scripts/run -sd >nohup.out 2>&1 &
+}
+
+# run the server locally
+run_server() {
+  rm nohup.out
+  nohup scripts/run -s&
+}
+
+# wait for server for the given number of seconds
+#
+#  Args:
+#   1: l_wait_time - wait time in seconds
+wait_for_server() {
+  local l_wait_time="$1"
+  echo "waiting up to $l_wait_time secs for server"
+  while [ $l_wait_time -gt 1 ]
+  do
+    sleep 1
+    grep "Channel started at port 8182" nohup.out
+    if [ $? -eq 0 ]
+    then
+      cat nohup.out
+      return
+    fi
+    l_wait_time=$((l_wait_time-1))
+    echo "$l_wait_time secs left ..."
+  done
+  echo "Server start failed"
+  cat nohup.out
+  exit 1
+}
+install
+run_server_docker
+wait_for_server 20
+
 scripts/test

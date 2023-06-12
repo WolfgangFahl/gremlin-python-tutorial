@@ -16,6 +16,7 @@ class TestTutorial(BaseGremlinTest):
         # in TinkerGraph this is the first id
         # get id of Marko's vertex which is usually 1 but might be different e.g.
         # when Neo4j is used
+        self.examples.load_by_name(self.g, "tinkerpop-modern")
         l=self.g.V().toList()
         self.id1=l[0].id
 
@@ -24,7 +25,8 @@ class TestTutorial(BaseGremlinTest):
         convert thing to string and print out for debugging
         """
         text=str(thing)
-        print (text)
+        if self.debug:
+            print (text)
         return text
 
     def test_tutorial1(self):
@@ -42,7 +44,7 @@ class TestTutorial(BaseGremlinTest):
         # we have a traversal now
         self.assertTrue(isinstance(gV,GraphTraversal))
         # convert it to a list to get the actual vertices
-        vList=gV.toList()
+        vList=gV.to_list()
         # there should be 6 vertices
         self.assertEqual(6,len(vList))
         # the default string representation of a vertex is showing the id
@@ -50,14 +52,13 @@ class TestTutorial(BaseGremlinTest):
         vListStr=self.log(vList)
         expected=f"[v[{self.id1}], v[{self.id1+1}], v[{self.id1+2}], v[{self.id1+3}], v[{self.id1+4}], v[{self.id1+5}]]"
         self.assertEqual(vListStr,expected)
-
     
     def test_tutorial2(self):
         """
         gremlin> g.V(1) //(2)
             ==>v[1]
         """
-        vListStr=self.log(self.g.V(self.id1).toList())
+        vListStr=self.log(self.g.V(self.id1).to_list())
         expected=f"[v[{self.id1}]]"
         self.assertEqual(vListStr,expected)
     
@@ -77,7 +78,7 @@ class TestTutorial(BaseGremlinTest):
             ==>e[7][1-knows->2]
             ==>e[8][1-knows->4]
         """
-        vList=self.g.V(self.id1).outE("knows").toList()
+        vList=self.g.V(self.id1).outE("knows").to_list()
         vListStr=self.log(vList)
         if self.remote_traversal.server.name=="Neo4j":
             self.assertEqual(2,len(vList))
@@ -91,7 +92,7 @@ class TestTutorial(BaseGremlinTest):
             ==>vadas
             ==>josh
         """
-        vList=self.g.V(self.id1).outE("knows").inV().values("name").toList()
+        vList=self.g.V(self.id1).outE("knows").inV().values("name").to_list()
         vListStr=self.log(vList)
         self.assertTrue(vListStr=="['vadas', 'josh']" or vListStr=="['josh', 'vadas']")
     
@@ -101,7 +102,6 @@ class TestTutorial(BaseGremlinTest):
             ==>vadas
             ==>josh
         """
-        vList=self.g.V(self.id1).out("knows").values("name").toList()
+        vList=self.g.V(self.id1).out("knows").values("name").to_list()
         vListStr=self.log(vList)
         self.assertTrue(vListStr=="['vadas', 'josh']" or vListStr=="['josh', 'vadas']")
-    

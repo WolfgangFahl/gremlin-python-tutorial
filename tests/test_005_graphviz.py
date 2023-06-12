@@ -1,9 +1,9 @@
 # see https://github.com/WolfgangFahl/gremlin-python-tutorial/blob/master/test_005_graphviz.py
 from graphviz import Digraph
 import os.path
+import platform
 from gremlin_python.process.traversal import T
 from tests.base_gremlin_test import BaseGremlinTest
-
 
 class TestGraphvizGraph(BaseGremlinTest):
     """
@@ -13,7 +13,7 @@ class TestGraphvizGraph(BaseGremlinTest):
     def test_createGraphvizGraph(self):
         # make sure we re-load the tinkerpop modern example
         g=self.g
-        self.remote_traversal.load(g,f"{self.data_path}/tinkerpop-modern.xml")
+        self.examples.load_by_name(g,f"tinkerpop-modern")
         # start a graphviz
         dot = Digraph(comment='Modern')
         # get vertice properties including id and label as dicts
@@ -45,10 +45,12 @@ class TestGraphvizGraph(BaseGremlinTest):
         dot.edge_attr.update(arrowsize='2',penwidth='2')
         dot.node_attr.update(style='filled',fillcolor="#A8D0E4")
         # print the source code
-        print (dot.source)
+        if self.debug:
+            print (dot.source)
+        if platform.system() == "Darwin":  # Darwin represents macOS
+            os.environ["PATH"] += os.pathsep + '/opt/local/bin'
+
         # render without viewing - default is creating a pdf file
         dot.render('/tmp/modern.gv', view=False)
         # check that the pdf file exists
         assert os.path.isfile('/tmp/modern.gv.pdf')
-
-

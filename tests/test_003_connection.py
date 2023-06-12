@@ -31,5 +31,6 @@ class TestConnection(Basetest):
         assert results_set.done.done()
         #assert 'host' in results_set.status_attributes
         print (results_set.status_attributes)
+        connection.close()
 
 

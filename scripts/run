@@ -4,7 +4,7 @@
 # test gremlin-python
 
 # see https://stackoverflow.com/questions/57936915/how-do-i-get-gremlin-python-with-gremlin-server-3-4-3-to-work
-version=3.6.3
+version=3.6.4
 mirror=https://dlcdn.apache.org/tinkerpop/$version
 gsd=apache-tinkerpop-gremlin-server-${version}
 gcd=apache-tinkerpop-gremlin-console-${version}
@@ -57,12 +57,14 @@ error() {
 #
 usage() {
   echo "usage: $0  [-c|-h|-i|-n|-p|-s|-t|-v]"
-  echo "  -c|--console: start console"
+  echo "  -c|--console: start groovy console"
+  echo "  -cd|--console_docker: start groovy console via docker"
   echo "  -h|--help: show this usage"
   echo "  -i|--install: install prerequisites"
   echo "  -n|--neo4j: start neo4j server"
   echo "  -p|--python: start python trial code"
   echo "  -s|--server: start server"
+  echo "  -sd|--server_server: start server via docker"
   echo "  -t|--test: start pytest"
   echo "  -v|--version: show version"
   exit 1
@@ -187,6 +189,21 @@ do
       color_msg $blue "starting gremlin-server ... using $conf"
       $gsd/bin/gremlin-server.sh $conf
       ;;
+    -sd|--server_docker)
+      example_dir=$HOME/.gremlin-examples
+      if [ ! -d $example_dir ]
+      then
+        color_msg $blue "create example directory $example_dir ..."
+        mkdir -p $example_dir
+      else
+        color_msg $green "example directory $example_dir already exists ..."
+      fi
+
+      color_msg $blue "starting gremlin-server via Docker ..."
+      #  export GREMLIN_YAML=/opt/gremlin-server/conf/gremlin-server.yaml
+      docker run --name gremlin-server -v $example_dir:/opt/gremlin-server/data/examples -p 8182:8182 tinkerpop/gremlin-server:$version conf/gremlin-server.yaml
+      #
+      ;;
     -n|--neo4j)
       plugin=neo4j-gremlin
       if [ ! -d $gsd/ext/$plugin ]
@@ -200,14 +217,21 @@ do
       conf=$(realpath $gsd/conf/gremlin-server-neo4j.yaml)
       $gsd/bin/gremlin-server.sh $conf
       ;;
+    -b|--bash)
+      color_msg $blue "starting docker bash"
+      docker exec -it  gremlin-server /bin/bash
+      ;;
     -c|--console)
       color_msg $blue "starting gremlin-console ..."
       $gcd/bin/gremlin.sh
       ;;
+    -cd|--console_docker)
+      color_msg $blue "starting gremlin-console via Docker..."
+      docker run -it tinkerpop/gremlin-console:$version --name gremlin-console
+      ;;
     -p|--python)
       color_msg $blue "starting python test code"
-      $python test_000.py
-      $python test_001.py
+      $python -m unittest tests/test_tutorial.py
       ;;
     -pv|--pythonversion)
       shift
