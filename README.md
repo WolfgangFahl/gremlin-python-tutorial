@@ -1,3 +1,5 @@
+[![pypi](https://img.shields.io/pypi/pyversions/gremlin-python-tutorial)](https://pypi.org/project/gremlin-python-tutorial/)
+[![PyPI Status](https://img.shields.io/pypi/v/gremlin-python-tutorial)](https://pypi.org/project/gremlin-python-tutorial/)
 [![Github Actions - build](https://github.com/WolfgangFahl/gremlin-python-tutorial/actions/workflows/build.yaml/badge.svg)](https://github.com/WolfgangFahl/gremlin-python-tutorial/actions/workflows/build.yaml)
 [![GitHub issues](https://img.shields.io/github/issues/WolfgangFahl/gremlin-python-tutorial.svg)](https://github.com/WolfgangFahl/gremlin-python-tutorial/issues)
 [![GitHub issues](https://img.shields.io/github/issues-closed/WolfgangFahl/gremlin-python-tutorial.svg)](https://github.com/WolfgangFahl/gremlin-python-tutorial/issues/?q=is%3Aissue+is%3Aclosed)
