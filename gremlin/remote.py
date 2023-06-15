@@ -17,14 +17,25 @@ class RemoteTraversal:
     helper class for Apache Tinkerpop Gremlin Python GLV remote access
     """
 
-    def __init__(self,serverName='server',config_path:str=None):
+    def __init__(self,server):
         """
         constructor
         
+        """
+        self.server=server
+        
+    @classmethod
+    def fromYaml(cls,serverName='server',config_path:str=None)->"RemoteTraversal":
+        """
+        create a server from the given yaml file
+        
         Args:
             serverName(str): the servername to use
+            config_path(str): the path to the server configuration file
         """
-        self.server=Server.read(serverName,config_path)
+        server=Server.read(serverName,config_path)
+        rt=RemoteTraversal(server)
+        return rt
    
     def g(self):
         """

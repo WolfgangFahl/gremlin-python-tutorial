@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/tests/driver/test_client.py
 from gremlin_python.driver.request import RequestMessage
-from gremlin.remote import RemoteTraversal
+from gremlin.remote import RemoteTraversal, Server
 from tests.basetest import Basetest
 
 class TestConnection(Basetest):
@@ -11,10 +11,11 @@ class TestConnection(Basetest):
     # test a connection
     def test_connection(self):
         # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/gremlin_python/driver/driver_remote_connection.py
-        remoteTraversal=RemoteTraversal()
-        g = remoteTraversal.g()
+        server=Server()
+        remote_traversal=RemoteTraversal(server)
+        g = remote_traversal.g()
         t=g.V()
-        remoteConnection=remoteTraversal.remoteConnection
+        remoteConnection=remote_traversal.remoteConnection
         # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/gremlin_python/driver/client.py
         client=remoteConnection._client
     

@@ -4,7 +4,7 @@ Created on 2023-03-23
 @author: wf
 '''
 from tests.basetest import Basetest
-from gremlin.remote import RemoteTraversal
+from gremlin.remote import RemoteTraversal, Server
 from gremlin.examples import Examples, Volume
 
 class BaseGremlinTest(Basetest):
@@ -17,7 +17,8 @@ class BaseGremlinTest(Basetest):
         prepare the test environment
         """
         Basetest.setUp(self, debug, profile)
-        self.remote_traversal=RemoteTraversal()
+        self.server=Server()
+        self.remote_traversal=RemoteTraversal(self.server)
         self.g=self.remote_traversal.g()
         self.volume=Volume.docker()
         self.examples=Examples(volume=self.volume,debug=self.debug)
