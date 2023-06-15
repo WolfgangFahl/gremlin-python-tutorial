@@ -5,6 +5,7 @@ Created on 2019-09-17
 '''
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
+from gremlin_python.driver.aiohttp.transport import AiohttpTransport
 import os.path
 from os.path import dirname, abspath
 import io
@@ -46,7 +47,7 @@ class RemoteTraversal:
         # https://github.com/orientechnologies/orientdb-gremlin/issues/143
         #username="root"
         #password="rootpwd"
-        self.remoteConnection=DriverRemoteConnection(url,server.alias,username=server.username,password=server.password)
+        self.remoteConnection=DriverRemoteConnection(url,server.alias,username=server.username,password=server.password, transport_factory=lambda:AiohttpTransport(call_from_event_loop=True))
         g = traversal().with_remote(self.remoteConnection)
         return g
     
