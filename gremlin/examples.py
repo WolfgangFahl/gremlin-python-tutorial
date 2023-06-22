@@ -57,6 +57,21 @@ class Volume:
         volume=Volume(local_path=local_path,remote_path=remote_path)
         return volume
     
+    @staticmethod
+    def local() -> "Volume":
+        """
+        get the default local volume mapping
+
+        Returns:
+            Volume: the local_path/remote_path mapping
+        """
+        home = str(Path.home())
+        local_path=f"{home}/.gremlin-examples"
+        os.makedirs(local_path, exist_ok=True)
+        remote_path=str(abspath(f"{dirname(abspath(__file__))}/data"))
+        volume=Volume(local_path=local_path,remote_path=remote_path)
+        return volume
+    
 @dataclass
 class Example:
     name:str
