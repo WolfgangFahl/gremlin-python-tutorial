@@ -3,6 +3,7 @@ Created on 2019-09-17
 
 @author: wf
 '''
+from __future__ import annotations
 from gremlin_python.process.anonymous_traversal import GraphTraversalSource, traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 from gremlin_python.driver.aiohttp.transport import AiohttpTransport
@@ -15,20 +16,32 @@ from contextlib import closing
 
 from typing import Optional
 
+
 class RemoteTraversal:
     """
     helper class for Apache Tinkerpop Gremlin Python GLV remote access
     """
 
-    def __init__(self, serverName:str = 'server', config_path:Optional[str] = None, in_jupyter: bool = False) -> None:
+    def __init__(self, server:Server, in_jupyter: bool = False) -> None:
         """
         constructor
         
+        """
+        self.server=server
+        self.in_jupyter=in_jupyter
+        
+    @staticmethod
+    def fromYaml(serverName='server',config_path:Optional[str]=None, in_jupyter: bool = False)->"RemoteTraversal":
+        """
+        create a server from the given yaml file
+        
         Args:
             serverName(str): the servername to use
+            config_path(str): the path to the server configuration file
         """
-        self.server=Server.read(serverName,config_path)
-        self.in_jupyter=in_jupyter
+        server=Server.read(serverName,config_path)
+        rt=RemoteTraversal(server, in_jupyter=in_jupyter)
+        return rt
    
     def g(self) -> GraphTraversalSource:
         """
