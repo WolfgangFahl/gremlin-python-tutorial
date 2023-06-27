@@ -1,6 +1,9 @@
+from os.path import abspath, dirname
 import urllib.request
 import os
 from pathlib import Path
+
+from gremlin_python.process.anonymous_traversal import GraphTraversalSource
 from gremlin.remote import RemoteTraversal
 from dataclasses import dataclass
 
@@ -39,8 +42,8 @@ class Volume:
         return path
         
     
-    @classmethod
-    def docker(cls)->"Volume":
+    @staticmethod
+    def docker()->"Volume":
         """
         get the default docker volume mapping
         
@@ -54,22 +57,39 @@ class Volume:
         volume=Volume(local_path=local_path,remote_path=remote_path)
         return volume
     
+    @staticmethod
+    def local() -> "Volume":
+        """
+        get the default local volume mapping
+
+        Returns:
+            Volume: the local_path/remote_path mapping
+        """
+        home = str(Path.home())
+        local_path=f"{home}/.gremlin-examples"
+        os.makedirs(local_path, exist_ok=True)
+        remote_path=str(abspath(f"{dirname(abspath(__file__))}/data"))
+        volume=Volume(local_path=local_path,remote_path=remote_path)
+        return volume
+    
 @dataclass
 class Example:
     name:str
     url:str
     
-    def __post_init__(self):
-        """
-        """
-    
-    def load(self,g,volume:Volume,force:bool=False,debug:bool=False):
+    def load(
+        self,
+        g: GraphTraversalSource,
+        volume: Volume,
+        force: bool = False,
+        debug: bool = False,
+    ) -> None:
         """
         download graph from remote_path to local_path depending on force flag
         and load graph into g
         
         Args:
-            g(GraphTraversal): the target 
+            g(GraphTraversalSource): the target graph (inout)
             volume:Volume
             force(bool): if True download even if local copy already exists
             debug(bool): if True show debugging information
@@ -77,7 +97,6 @@ class Example:
         self.download(volume.local_path, force=force,debug=debug)
         graph_xml=f"{volume.remote_path}/{self.name}.xml"
         RemoteTraversal.load(g, graph_xml)
-        pass
     
     def download(self,path,force:bool=False,debug:bool=False)->str:
         """
@@ -113,7 +132,7 @@ class Examples:
     Examples 
     """
     
-    def __init__(self,volume,debug:bool=False):
+    def __init__(self,volume:Volume,debug:bool=False):
         """
         Constructor
         
@@ -129,16 +148,20 @@ class Examples:
             Example(name="tinkerpop-modern",url="https://raw.githubusercontent.com/apache/tinkerpop/master/data/tinkerpop-modern.xml"),
             Example(name="grateful-dead",url="https://raw.githubusercontent.com/apache/tinkerpop/master/data/grateful-dead.xml"),
             Example(name="air-routes-small",url="https://raw.githubusercontent.com/krlawrence/graph/master/sample-data/air-routes-small.graphml"),
-            Example(name="air-routes-latest",url="https://raw.githubusercontent.com/krlawrence/graph/master/sample-data/air-routes-latest.graphml")        ]:
+            Example(name="air-routes-latest",url="https://raw.githubusercontent.com/krlawrence/graph/master/sample-data/air-routes-latest.graphml")
+        ]:
             self.examples_by_name[example.name]=example
         
-    def load_by_name(self,g,name:str):
+    def load_by_name(self, g: GraphTraversalSource, name: str) -> None:
         """
         load an example by name to the given graph
         
         Args:
-            g: the target graph
+            g(GraphTraversalSource): the target graph (inout)
             name(str): the name of the example
+
+        Raises:
+            Exception: if the example does not exist
         """
         if name in self.examples_by_name:
             example=self.examples_by_name[name]

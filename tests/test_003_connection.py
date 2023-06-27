@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/jython/tests/driver/test_client.py
+from os.path import abspath, dirname
 from gremlin_python.driver.request import RequestMessage
 from gremlin.remote import RemoteTraversal, Server
 from tests.basetest import Basetest
