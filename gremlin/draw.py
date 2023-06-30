@@ -71,8 +71,8 @@ class GremlinDraw:
 
         # draw the edge
         digraph.edge(
-            tail_name = str(in_vertex_id),
-            head_name = str(out_vertex_id),
+            tail_name = str(out_vertex_id),
+            head_name = str(in_vertex_id),
             label = f"{str(edge.id)}\n{edge.label}\n{'─' * 5}\n{properties_label}",
             style = "setlinewidth(3)",
             fontname = "arial"

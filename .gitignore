@@ -115,3 +115,6 @@ nohup.out
 
 # eclipse settings directory
 .settings
+
+# VSCode files
+.vscode/
