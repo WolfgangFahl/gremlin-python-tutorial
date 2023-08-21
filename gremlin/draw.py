@@ -12,13 +12,49 @@ from gremlin_python.process.anonymous_traversal import GraphTraversalSource
 from gremlin_python.process.graph_traversal import GraphTraversal
 from gremlin_python.process.traversal import T
 from gremlin_python.structure.graph import Vertex, Edge, Path
-
+from dataclasses import dataclass
 from aenum import Enum
 
+@dataclass
+class GremlinDrawConfig:
+    """
+    draw configuration parameters
+    """
+    fontname: str="arial"
+    fillcolor:str ="#ADE1FE"
+    output_format:str ='pdf'
+    edge_line_width: int=3
+    dash_width: int=5 # number of dashes to apply
+    v_limit:int=10 # maximum number of vertices to show
+    e_limit:int=10 # maximum number of edges to show
 
 class GremlinDraw:
-    @staticmethod
-    def __draw_vertex(digraph: graphviz.Digraph, g: GraphTraversalSource, vertex: Vertex) -> graphviz.Digraph:
+    """
+    helper class to draw Gremlin Graphs via Graphviz
+    """
+    
+    def __init__(self,g: GraphTraversalSource,title:str,config:GremlinDrawConfig=None):
+        """
+        constructor
+        """
+        self.g=g
+        self.title=title
+        if config is None:
+            config=GremlinDrawConfig()
+        self.config=config
+        self.gviz: graphviz.Digraph = graphviz.Digraph(title, format=config.output_format)
+        
+    def __as_label(self,head,body:str)->str:
+        """
+        create a label from head and body separated by a dash
+        with the configured width
+        """
+        # note the UTF-8 dash ...
+        dash="─"*self.config.dash_width
+        label=f"{head}\n{dash}\n{body}"
+        return label
+    
+    def draw_vertex(self, vertex: Vertex):
         """
         draw a single given vertex
         """
@@ -27,27 +63,25 @@ class GremlinDraw:
         # then, g can also be removed as a parameter
         
         # get the properties of the vertex
-        kvp_list = list(next(g.V(vertex).element_map()).items())
-        # non-proerty items are of type aenum
+        kvp_list = list(next(self.g.V(vertex).element_map()).items())
+        # non-property items are of type aenum
         properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
         assert len(properties) == len(kvp_list) - 2 # ID and label are not properties
     
         properties_label = "\n".join(f"{key}: {value}" for key, value in properties)
-
+        head=f"{str(vertex.id)}\n{vertex.label}"
+        body=f"{properties_label}"
+        label=self.__as_label(head, body)
         # draw the vertex
-        digraph.node(
+        self.gviz.node(
             name=str(vertex.id),
-            label=f"{str(vertex.id)}\n{vertex.label}\n{'─' * 5}\n{properties_label}",
-            fillcolor = "#ADE1FE",
+            label=f"{label}",
+            fillcolor = f"{self.config.fillcolor}",
             style = "filled",
-            fontname = "arial"
+            fontname = f"{self.config.fontname}"
         )
-
-        return digraph
-
     
-    @staticmethod
-    def __draw_edge(digraph: graphviz.Digraph, g: GraphTraversalSource, edge: Edge) -> graphviz.Digraph:
+    def draw_edge(self, edge: Edge):
         """
         draw a single given edge
         """
@@ -58,61 +92,45 @@ class GremlinDraw:
         # get the properties of the edge
         #kvp_list = list(next(g.E(edge).element_map()).items())
         # Workaround, because the above line does not work due to inconsistencies / bugs in the gremlin-python library
-        kvp_list = [edge_element_map for edge_element_map in g.E().element_map().to_list() if edge_element_map[T.id] == edge.id][0].items()
+        kvp_list = [edge_element_map for edge_element_map in self.g.E().element_map().to_list() if edge_element_map[T.id] == edge.id][0].items()
         # non-proerty items are of type aenum
         properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
         assert len(properties) == len(kvp_list) - 4 # ID, label, in, and out are not properties
         
         properties_label = "\n".join(f"{key}: {value}" for key, value in properties)
-        
+        head=f"{str(edge.id)}\n{edge.label}"
+        body=properties_label
+        label=self.__as_label(head,body)
         # get the image of the edge by id
         in_vertex_id = edge.inV.id
         out_vertex_id = edge.outV.id
-
+        
         # draw the edge
-        digraph.edge(
+        self.gviz.edge(
             tail_name = str(out_vertex_id),
             head_name = str(in_vertex_id),
-            label = f"{str(edge.id)}\n{edge.label}\n{'─' * 5}\n{properties_label}",
-            style = "setlinewidth(3)",
-            fontname = "arial"
+            label = f"{label}",
+            style = f"setlinewidth({self.config.edge_line_width})",
+            fontname = f"{self.config.fontname}"
         )
-
-        return digraph
-
-
-    @staticmethod
-    def show(g: GraphTraversalSource, title:str="Gremlin", v_limit:int=10, e_limit:int=10) -> graphviz.Digraph:
-        """
-        draw the given graph
-        """
-        G: graphviz.Digraph = graphviz.Digraph(title, format="pdf")
         
+    def draw_g(self):
         # draw vertices
-        vlist = g.V().to_list()
-        vlist = vlist[:v_limit]
+        vlist = self.g.V().to_list()
+        vlist = vlist[:self.config.v_limit]
         
         for v in vlist:
-            G = GremlinDraw.__draw_vertex(G, g, v)
+            self.draw_vertex(v)
 
         #draw edges
-        elist = g.E().to_list()
-        elist = elist[:e_limit]
+        elist = self.g.E().to_list()
+        elist = elist[:self.config.e_limit]
         
         for e in elist:
-            G = GremlinDraw.__draw_edge(G, g, e)
-        
-        return G
-
-    @staticmethod
-    def show_graph_traversal(g: GraphTraversalSource, gt: Union[GraphTraversal, Any], title: str="Gremlin") -> graphviz.Digraph:
-        """
-        draw the given graph traversal
-        """
-        # developer note: when moving the minium supported version up to 3.10, the following code can be greatly improved by using match statements
-
-        G: graphviz.Digraph = graphviz.Digraph(title, format="pdf")
-
+            self.draw_edge(e)
+            
+    def draw(self,gt: Union[GraphTraversal, Any]):
+        # developer note: when moving the minimum supported version up to 3.10, the following code can be greatly improved by using match statements
         worklist: List[Any] = gt.to_list() if isinstance(gt, GraphTraversal) else list(gt) if isinstance(gt, Iterable) else [gt]
 
         while len(worklist) > 0:
@@ -122,19 +140,19 @@ class GremlinDraw:
             result = worklist.pop(0)
 
             if isinstance(result, Vertex):
-                G = GremlinDraw.__draw_vertex(G, g, result)
+                self.draw_vertex(result)
             elif isinstance(result, Edge):
-                G = GremlinDraw.__draw_edge(G, g, result)
+                self.draw_edge(result)
             elif isinstance(result, Path):
                 for item in result.objects:
                     worklist.append(item)
             elif isinstance(result, dict):
                 if T.id in result:
                     # check if the id is a vertex or an edge
-                    if g.V(result[T.id]).hasNext():
-                        G = GremlinDraw.__draw_vertex(G, g, next(g.V(result[T.id])))
-                    elif g.E(result[T.id]).hasNext():
-                        G = GremlinDraw.__draw_edge(G, g, g.E(result[T.id]).next())
+                    if self.g.V(result[T.id]).hasNext():
+                        self.draw_vertex(next(self.g.V(result[T.id])))
+                    elif self.g.E(result[T.id]).hasNext():
+                        self.draw_edge(self.g.E(result[T.id]).next())
                     else:
                         #raise Exception("id not found")
                         pass # silent skip
@@ -144,7 +162,23 @@ class GremlinDraw:
             else:
                 #raise Exception(f"unknown type: {type(result)}")
                 pass # silent skip
+        
+    @staticmethod
+    def show(g: GraphTraversalSource, title:str="Gremlin", v_limit:int=10, e_limit:int=10) -> graphviz.Digraph:
+        """
+        draw the given graph
+        """
+        gd=GremlinDraw(g=g,title=title)
+        gd.config.v_limit=v_limit
+        gd.config.e_limit=e_limit
+        gd.draw_g()
+        return gd.gviz
 
-        return G
-
-
+    @staticmethod
+    def show_graph_traversal(g: GraphTraversalSource, gt: Union[GraphTraversal, Any], title: str="Gremlin") -> graphviz.Digraph:
+        """
+        draw the given graph traversal
+        """
+        gd=GremlinDraw(g=g,title=title)
+        gd.draw(gt)
+        return gd.gviz
