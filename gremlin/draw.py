@@ -60,6 +60,46 @@ class GremlinDraw:
         label=f"{head}\n{dash}\n{body}"
         return label
     
+    def get_vertex_properties(self,vertex:Vertex)->list:
+        """
+        get the properties for a given vertex
+        """
+        # developer note: see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/python/gremlin_python/structure/graph.py#LL58C23-L58C23
+        # has properties but these are not set as for gremlin-python 3.7.0 
+        
+        # get the properties of the vertex (work around)
+        kvp_list = list(next(self.g.V(vertex).element_map()).items())
+        # non-property items are of type aenum
+        properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
+        assert len(properties) == len(kvp_list) - 2 # ID and label are not properties
+        if self.config.vertex_properties is not None:
+            properties = [item for item in properties if item[0] in self.config.vertex_properties]
+        return properties
+    
+    def get_edge_properties(self,edge:Edge)->list:
+        # developer note: see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/python/gremlin_python/structure/graph.py#L66
+        # when gremlin-python 3.7.0 is released, the following code might be improved (get the properties using edge.properties)
+        # e_props=edge.properties
+        # 2023-08-21: WF tested - but properties are not set ...
+        # then, g can also be removed as a parameter
+        # get the properties of the edge
+        edge_t=self.g.E(edge)
+        try: 
+            edge_map=edge_t.element_map().next()
+            kvp_list = list(edge_map.items())
+        except StopIteration:
+            pass
+            return[]
+        
+        # Workaround, because the above line does not work due to inconsistencies / bugs in the gremlin-python library
+        #kvp_list = [edge_element_map for edge_element_map in self.g.E().element_map().to_list() if edge_element_map[T.id] == edge.id][0].items()
+        # non-property items are of type aenum
+        properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
+        assert len(properties) == len(kvp_list) - 4 # ID, label, in, and out are not properties
+        if self.config.edge_properties is not None:
+            properties = [item for item in properties if item[0] in self.config.edge_properties]
+        return properties
+    
     def draw_vertex(self, vertex: Vertex):
         """
         draw a single given vertex
@@ -69,18 +109,7 @@ class GremlinDraw:
             return
         if vertex.id in self.v_drawn:
             return
-        # developer note: see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/python/gremlin_python/structure/graph.py#LL58C23-L58C23
-        # when gremlin-python 3.7.0 is released, the following code can be improved (get the properties using vertex.properties)
-        # then, g can also be removed as a parameter
-        
-        # get the properties of the vertex
-        kvp_list = list(next(self.g.V(vertex).element_map()).items())
-        # non-property items are of type aenum
-        properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
-        assert len(properties) == len(kvp_list) - 2 # ID and label are not properties
-        if self.config.vertex_properties is not None:
-            properties = [item for item in properties if item[0] in self.config.vertex_properties]
-
+        properties=self.get_vertex_properties(vertex)
         properties_label = "\n".join(f"{key}: {value}" for key, value in properties)
         head=f"{str(vertex.id)}\n{vertex.label}"
         body=f"{properties_label}"
@@ -108,21 +137,7 @@ class GremlinDraw:
             self.draw_vertex(edge.inV)
             self.draw_vertex(edge.outV)
             pass
-        # developer note: see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/python/gremlin_python/structure/graph.py#L66
-        # when gremlin-python 3.7.0 is released, the following code might be improved (get the properties using edge.properties)
-        # e_props=edge.properties
-        # 2023-08-21: WF tested - but properties are not set ...
-        # then, g can also be removed as a parameter
-        # get the properties of the edge
-        kvp_list = list(next(self.g.E(edge).element_map()).items())
-        # Workaround, because the above line does not work due to inconsistencies / bugs in the gremlin-python library
-        #kvp_list = [edge_element_map for edge_element_map in self.g.E().element_map().to_list() if edge_element_map[T.id] == edge.id][0].items()
-        # non-property items are of type aenum
-        properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
-        assert len(properties) == len(kvp_list) - 4 # ID, label, in, and out are not properties
-        if self.config.edge_properties is not None:
-            properties = [item for item in properties if item[0] in self.config.edge_properties]
-        
+        properties=self.get_edge_properties(edge)
         properties_label = "\n".join(f"{key}: {value}" for key, value in properties)
         head=f"{str(edge.id)}\n{edge.label}"
         body=properties_label
