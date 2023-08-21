@@ -27,6 +27,9 @@ class GremlinDrawConfig:
     dash_width: int=5 # number of dashes to apply
     v_limit:int=10 # maximum number of vertices to show
     e_limit:int=10 # maximum number of edges to show
+    # optionally set the properties to be displayed
+    vertex_properties: List[str] = None  # New filter for vertex properties
+    edge_properties: List[str] = None  # New filter for edge properties
 
 class GremlinDraw:
     """
@@ -43,6 +46,9 @@ class GremlinDraw:
             config=GremlinDrawConfig()
         self.config=config
         self.gviz: graphviz.Digraph = graphviz.Digraph(title, format=config.output_format)
+        # keep track of the vertices and edges drawn
+        self.v_drawn={}
+        self.e_drawn={}
         
     def __as_label(self,head,body:str)->str:
         """
@@ -58,6 +64,11 @@ class GremlinDraw:
         """
         draw a single given vertex
         """
+        # avoid drawing to many vertices
+        if len(self.v_drawn)>=self.config.v_limit:
+            return
+        if vertex.id in self.v_drawn:
+            return
         # developer note: see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/python/gremlin_python/structure/graph.py#LL58C23-L58C23
         # when gremlin-python 3.7.0 is released, the following code can be improved (get the properties using vertex.properties)
         # then, g can also be removed as a parameter
@@ -67,7 +78,9 @@ class GremlinDraw:
         # non-property items are of type aenum
         properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
         assert len(properties) == len(kvp_list) - 2 # ID and label are not properties
-    
+        if self.config.vertex_properties is not None:
+            properties = [item for item in properties if item[0] in self.config.vertex_properties]
+
         properties_label = "\n".join(f"{key}: {value}" for key, value in properties)
         head=f"{str(vertex.id)}\n{vertex.label}"
         body=f"{properties_label}"
@@ -80,22 +93,35 @@ class GremlinDraw:
             style = "filled",
             fontname = f"{self.config.fontname}"
         )
+        self.v_drawn[vertex.id]=vertex
     
-    def draw_edge(self, edge: Edge):
+    def draw_edge(self, edge: Edge,with_vertices:bool=True):
         """
         draw a single given edge
         """
+        # avoid drawing to many vertices
+        if len(self.e_drawn)>=self.config.e_limit:
+            return
+        if edge.id in self.e_drawn:
+            return
+        if with_vertices:
+            self.draw_vertex(edge.inV)
+            self.draw_vertex(edge.outV)
+            pass
         # developer note: see https://github.com/apache/tinkerpop/blob/master/gremlin-python/src/main/python/gremlin_python/structure/graph.py#L66
-        # when gremlin-python 3.7.0 is released, the following code can be improved (get the properties using edge.properties)
+        # when gremlin-python 3.7.0 is released, the following code might be improved (get the properties using edge.properties)
+        # e_props=edge.properties
+        # 2023-08-21: WF tested - but properties are not set ...
         # then, g can also be removed as a parameter
-
         # get the properties of the edge
-        #kvp_list = list(next(g.E(edge).element_map()).items())
+        kvp_list = list(next(self.g.E(edge).element_map()).items())
         # Workaround, because the above line does not work due to inconsistencies / bugs in the gremlin-python library
-        kvp_list = [edge_element_map for edge_element_map in self.g.E().element_map().to_list() if edge_element_map[T.id] == edge.id][0].items()
-        # non-proerty items are of type aenum
+        #kvp_list = [edge_element_map for edge_element_map in self.g.E().element_map().to_list() if edge_element_map[T.id] == edge.id][0].items()
+        # non-property items are of type aenum
         properties = [item for item in kvp_list if not isinstance(item[0], Enum)]
         assert len(properties) == len(kvp_list) - 4 # ID, label, in, and out are not properties
+        if self.config.edge_properties is not None:
+            properties = [item for item in properties if item[0] in self.config.edge_properties]
         
         properties_label = "\n".join(f"{key}: {value}" for key, value in properties)
         head=f"{str(edge.id)}\n{edge.label}"
@@ -113,6 +139,7 @@ class GremlinDraw:
             style = f"setlinewidth({self.config.edge_line_width})",
             fontname = f"{self.config.fontname}"
         )
+        self.e_drawn[edge.id]=edge
         
     def draw_g(self):
         # draw vertices
