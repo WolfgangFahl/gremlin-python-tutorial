@@ -118,3 +118,6 @@ nohup.out
 
 # VSCode files
 .vscode/
+
+# mkdocs
+docs
