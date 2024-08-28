@@ -20,13 +20,13 @@ readme = "README.md"
 license = { file="LICENSE" }
 dependencies = [
 		# https://pypi.org/project/gremlinpython/
-        'gremlinpython>=3.7.0',
+        'gremlinpython>=3.7.2',
         # https://pypi.org/project/graphviz/
-        'graphviz>=0.20.1',
+        'graphviz>=0.20.3',
         # https://pypi.org/project/PyYAML/
-        'PyYAML>=6.0',
+        'PyYAML>=6.0.2',
         # https://pypi.org/project/aenum/
-        'aenum>=3.1',
+        'aenum>=3.1.15',
      ]
 
 requires-python = ">=3.9"
