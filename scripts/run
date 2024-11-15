@@ -4,7 +4,7 @@
 # test gremlin-python
 
 # see https://stackoverflow.com/questions/57936915/how-do-i-get-gremlin-python-with-gremlin-server-3-4-3-to-work
-version=3.6.4
+version=3.7.3
 mirror=https://dlcdn.apache.org/tinkerpop/$version
 gsd=apache-tinkerpop-gremlin-server-${version}
 gcd=apache-tinkerpop-gremlin-console-${version}
