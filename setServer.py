@@ -23,5 +23,5 @@ gremote.Server.debug=True
 # try reading the server description from the yaml file with the given name
 server=gremote.Server.read(args.name)
 if server is None or args.rewrite:
-  server=gremote.Server(host=args.host,port=args.port,alias=args.alias,name=args.name,username=args.username,password=args.password,debug=args.debug)
-  server.write()
+    server=gremote.Server(host=args.host,port=args.port,alias=args.alias,name=args.name,username=args.username,password=args.password,debug=args.debug)
+    server.write()
